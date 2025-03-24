@@ -1,1 +1,11 @@
 export { default as EyeIcon } from "./eye";
+export { default as SearchIcon } from "./search";
+export { default as UserIcon } from "./user";
+export { default as EvoEventIcon } from "./evo_event";
+export { default as LeafIcon } from "./leaf";
+export { default as ArrowIcon } from "./arrow";
+export { default as CrossIcon } from "./cross";
+export { default as NoRecordIcon } from "./no_record";
+export { default as UploadImageIcon } from "./upload_image";
+export { default as CalendarIcon } from "./calendar";
+export { default as DownArrowIcon } from "./down_arrow";
