@@ -1,8 +1,10 @@
 "use client";
 import {
   ArrowIcon,
+  CardViewButtonIcon,
   CrossIcon,
   EvoEventIcon,
+  FilterButtonIcon,
   LeafIcon,
   NoRecordIcon,
   SearchIcon,
@@ -15,6 +17,7 @@ export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasRecord, setHasRecord] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const list = [0, 1, 2, 4, 5];
 
   return (
     <div>
@@ -63,32 +66,58 @@ export default function Dashboard() {
         )}
         {hasRecord ? (
           <>
-            <div className="mt-3">
-              <div className="font-medium text-[24px] text-[#060606] font-sans">
-                Events
-              </div>
-              <div className="font-normal text-[16px] text-[#06060680]">
-                View and manage every events of the future.
-              </div>
-            </div>
-            <div className="flex-1 flex justify-center items-center gap-2 flex-col p-2">
+            {list.length > 0 ? (
               <div>
-                <LeafIcon />
+                <div className="flex justify-between items-center mt-2">
+                  <div className="flex gap-2">
+                    <span className="rounded-[8px] border-[1px] border-[#06060680] p-2">
+                      <FilterButtonIcon />
+                    </span>
+                    <span className="rounded-[8px] border-[1px] border-[#06060680] p-2">
+                      <CardViewButtonIcon />
+                    </span>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => setIsAddModalOpen(true)}
+                      className="gradient-bg px-6 font-sans py-2 text-[16px] text-white"
+                    >
+                      Add New Event
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-2">card view</div>
               </div>
-              <div className="text-center">
-                <span className="text-[#06060680] text-[20px] text-center">
-                  No Event’s to show yet ! add new event here...
-                </span>
-              </div>
-              <div>
-                <button
-                  onClick={() => setIsAddModalOpen(true)}
-                  className="gradient-bg px-6 font-sans py-2 text-[16px] text-white"
-                >
-                  Add New Event
-                </button>
-              </div>
-            </div>
+            ) : (
+              <>
+                <div className="mt-3">
+                  <div className="font-medium text-[24px] text-[#060606] font-sans">
+                    Events
+                  </div>
+                  <div className="font-normal text-[16px] text-[#06060680]">
+                    View and manage every events of the future.
+                  </div>
+                </div>
+                <div className="flex-1 flex justify-center items-center gap-2 flex-col p-2">
+                  <div>
+                    <LeafIcon />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[#06060680] text-[20px] text-center">
+                      No Event’s to show yet ! add new event here...
+                    </span>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => setIsAddModalOpen(true)}
+                      className="gradient-bg px-6 font-sans py-2 text-[16px] text-white"
+                    >
+                      Add New Event
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <div className="flex-1 flex justify-center items-center gap-2 flex-col p-2">
