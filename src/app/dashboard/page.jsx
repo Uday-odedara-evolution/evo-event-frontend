@@ -10,13 +10,17 @@ import {
   SearchIcon,
   UserIcon,
 } from "@/assets/svg";
-import { EventModal } from "@/components";
+import { DeleteModal, EventModal } from "@/components";
 import { useState } from "react";
+import CardView from "./components/card_view/CardView";
+import ListView from "./components/list_view/ListView";
 
 export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasRecord, setHasRecord] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(true);
+  const [isCardView, setIsCardView] = useState(false);
   const list = [0, 1, 2, 4, 5];
 
   return (
@@ -67,8 +71,8 @@ export default function Dashboard() {
         {hasRecord ? (
           <>
             {list.length > 0 ? (
-              <div>
-                <div className="flex justify-between items-center mt-2">
+              <div className="h-full flex flex-col gap-2">
+                <div className="flex justify-between items-center">
                   <div className="flex gap-2">
                     <span className="rounded-[8px] border-[1px] border-[#06060680] p-2">
                       <FilterButtonIcon />
@@ -86,7 +90,17 @@ export default function Dashboard() {
                     </button>
                   </div>
                 </div>
-                <div className="mt-2">card view</div>
+                {isCardView ? (
+                  <CardView
+                    setIsDeleteModalOpen={setIsDeleteModalOpen}
+                    setIsAddModalOpen={setIsAddModalOpen}
+                  />
+                ) : (
+                  <ListView
+                    setIsDeleteModalOpen={setIsDeleteModalOpen}
+                    setIsAddModalOpen={setIsAddModalOpen}
+                  />
+                )}
               </div>
             ) : (
               <>
@@ -134,6 +148,10 @@ export default function Dashboard() {
       <EventModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+      />
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import Modal from "@mui/material/Modal";
 import { useMediaQuery } from "@mui/system";
 
-const ModalView = ({ isOpen = false, children, onClose }) => {
+const ModalView = ({ isOpen = false, children, onClose, isDeleteModal }) => {
   const isMobileView = useMediaQuery("(max-width:600px)");
   console.log("isMobileView", isMobileView);
 
@@ -16,7 +16,12 @@ const ModalView = ({ isOpen = false, children, onClose }) => {
   }
 
   return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 bg-white h-full">
+    <div
+      className="fixed bottom-0 left-0 right-0 bg-white h-full"
+      style={{
+        top: isDeleteModal ? "50vh" : "0",
+      }}
+    >
       {children}
     </div>
   );

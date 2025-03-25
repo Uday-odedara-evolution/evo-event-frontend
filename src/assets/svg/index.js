@@ -12,3 +12,8 @@ export { default as DownArrowIcon } from "./down_arrow";
 export { default as FilterButtonIcon } from "./filter_button";
 export { default as CardViewButtonIcon } from "./card_view_button";
 export { default as ListViewButtonIcon } from "./list_view_button";
+export { default as UpdateIcon } from "./update";
+export { default as DeleteIcon } from "./delete";
+export { default as PreviousIcon } from "./previous";
+export { default as ForwardIcon } from "./forward";
+export { default as GirlThinkingIcon } from "./girl_thinking";
