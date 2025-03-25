@@ -33,7 +33,7 @@ export default function Login() {
             <div className="text-[#06060680]">Email address</div>
             <div>
               <input
-                className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620]"
+                className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
                 type="text"
                 placeholder="Ex. jhondoe@mailsample.com"
               />
@@ -43,7 +43,7 @@ export default function Login() {
             <div className="text-[#06060680] text-[16px]">Password</div>
             <div className="relative">
               <input
-                className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620]"
+                className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
                 type="password"
                 placeholder="* * * * *"
                 id="pass-input"
@@ -59,19 +59,19 @@ export default function Login() {
           <div className="flex items-center">
             <div className="flex">
               <input
-                className="bg-white accent-[#FD5900] border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620]"
+                className="bg-white cursor-pointer accent-[#FD5900] border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
                 type="checkbox"
               />
             </div>
             <div className="ms-2 text-[#06060680] text-[16px]">Remember me</div>
           </div>
           <div>
-            <button className="gradient-bg h-[48px] w-full cursor-pointer">
+            <button className="gradient-bg h-[48px] w-full cursor-pointer font-medium text-[white]">
               Log in
             </button>
           </div>
           <div className="text-center text-[16px] underline">
-            <span>Forgot the password ?</span>
+            <span className="cursor-pointer">Forgot the password ?</span>
           </div>
         </div>
       </div>

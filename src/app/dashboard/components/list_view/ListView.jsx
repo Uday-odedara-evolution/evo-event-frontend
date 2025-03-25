@@ -1,7 +1,38 @@
 import { ForwardIcon, PreviousIcon } from "@/assets/svg";
 import { EventListItem } from "@/components";
+import { useEffect, useState } from "react";
 
-const ListView = ({ setIsAddModalOpen, setIsDeleteModalOpen }) => {
+const ListView = ({
+  handleClickUpdate,
+  handleClickDelete,
+  data,
+  currentPage,
+  setCurrentPage,
+}) => {
+  const [pages, setPages] = useState([]);
+  console.log("currentPage", currentPage);
+  const totalPages = Math.ceil(data?.totalCount / 10);
+
+  useEffect(() => {
+    console.log("totalPages", totalPages);
+
+    const arr = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      arr.push(i);
+    }
+    setPages(arr);
+    console.log("arr", arr);
+  }, [data]);
+
+  const handlePageChange = (type) => {
+    if (type === "back") {
+      setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+    } else {
+      setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+    }
+  };
+
   return (
     <div className="h-full bg-white rounded-2xl flex flex-col overflow-auto p-2">
       <div className="">
@@ -21,32 +52,48 @@ const ListView = ({ setIsAddModalOpen, setIsDeleteModalOpen }) => {
         </div>
       </div>
       <div className="h-full">
-        <EventListItem
-          setIsAddModalOpen={setIsAddModalOpen}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-        />
+        {data?.totalCount > 0 &&
+          data?.list.map((item) => {
+            return (
+              <EventListItem
+                key={`list-item-${item.id}`}
+                handleClickDelete={handleClickDelete}
+                item={item}
+                handleClickUpdate={handleClickUpdate}
+              />
+            );
+          })}
       </div>
       <div className="flex justify-between items-center">
-        <div className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2">
+        <button
+          onClick={() => handlePageChange("prev")}
+          className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
+        >
           <span>
             <PreviousIcon />
           </span>
           <span className="text-[#06060680] text-[16px] hidden lg:block">
             Previous
           </span>
-        </div>
+        </button>
         <div className="flex gap-1">
-          <button className="bg-[#FD5900] text-white h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer">
-            1
-          </button>
-          <button className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer">
-            2
-          </button>
-          <button className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer">
-            3
-          </button>
+          {pages.map((page) => (
+            <button
+              key={`page-${page}`}
+              style={{
+                backgroundColor: currentPage === page ? "#FD5900" : "unset",
+                color: currentPage === page ? "white" : "#667085",
+              }}
+              className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer"
+            >
+              {page}
+            </button>
+          ))}
         </div>
-        <div className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2">
+        <div
+          onClick={() => handlePageChange("next")}
+          className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
+        >
           <span className="text-[#06060680] text-[16px] hidden lg:block">
             Forward
           </span>

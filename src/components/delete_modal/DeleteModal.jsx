@@ -1,10 +1,24 @@
 import { GirlThinkingIcon } from "@/assets/svg";
 import { ModalView } from "..";
+import APICall from "@/utils/ApiCall";
 
-const DeleteModal = ({ isOpen = false, onClose = () => {} }) => {
+const DeleteModal = ({
+  isOpen = false,
+  onClose = () => {},
+  itemId = null,
+  onDelete = () => {},
+}) => {
   if (!isOpen) {
     return null;
   }
+
+  const handleDelete = () => {
+    APICall.delete(`/event/${itemId}`).then(() => {
+      onClose();
+      onDelete();
+    });
+  };
+
   return (
     <ModalView isOpen={isOpen} onClose={onClose} isDeleteModal>
       <div className="p-3 flex flex-col gap-2">
@@ -35,7 +49,10 @@ const DeleteModal = ({ isOpen = false, onClose = () => {} }) => {
             >
               Cancel
             </button>
-            <button className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1">
+            <button
+              onClick={handleDelete}
+              className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1"
+            >
               Delete
             </button>
           </div>
