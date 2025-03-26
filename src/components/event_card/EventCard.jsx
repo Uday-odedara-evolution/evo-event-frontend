@@ -5,20 +5,20 @@ const EventCard = ({ handleClickUpdate, handleClickDelete, item }) => {
   const formattedDate = item?.event_date ? item?.event_date.split("T")[0] : "";
 
   return (
-    <div className="w-full lg:w-[30%] bg-white flex flex-col p-3 rounded-xl gap-1 m-auto">
+    <div className="w-full bg-white flex flex-col p-3 rounded-xl gap-1 m-auto">
       <div className="max-w-full">
         <img
-          className="h-full w-full rounded-xl"
+          className="h-full w-full lg:max-h-[200px] rounded-xl m-auto"
           src={`http://localhost:3000/uploads/${item?.image_url}`}
           alt=""
         />
       </div>
       <div className="flex items-center">
         <span className="text-[24px] font-sans">{item?.name}</span>
-        <button onClick={() => handleClickDelete(item)} className="ms-auto">
+        <button onClick={() => handleClickDelete(item)} className="ms-auto cursor-pointer">
           <DeleteIcon />
         </button>
-        <button className="ms-1" onClick={() => handleClickUpdate(item)}>
+        <button className="ms-1 cursor-pointer" onClick={() => handleClickUpdate(item)}>
           <UpdateIcon />
         </button>
       </div>

@@ -1,7 +1,13 @@
 "use client";
 import { EyeIcon } from "@/assets/svg";
+import APICall from "@/utils/ApiCall";
+import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function Login() {
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
   const handleShowPassword = () => {
     const el = document.getElementById("pass-input");
     console.log("el", el.type);
@@ -13,6 +19,31 @@ export default function Login() {
     }
 
     console.log("show");
+  };
+
+  const handleLogin = () => {
+    let redirectLink = null;
+    const payload = {
+      email,
+      password,
+    };
+
+    APICall.post("/auth/login", payload)
+      .then((res) => {
+        console.log("res", res);
+        const userData = res?.data;
+        localStorage.setItem("userdata", JSON.stringify(userData));
+
+        redirectLink = "/dashboard";
+      })
+      .catch((err) => {
+        console.log("err", err);
+      })
+      .finally(() => {
+        if (redirectLink) {
+          redirect(redirectLink);
+        }
+      });
   };
 
   return (
@@ -36,6 +67,8 @@ export default function Login() {
                 className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
                 type="text"
                 placeholder="Ex. jhondoe@mailsample.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
@@ -47,6 +80,8 @@ export default function Login() {
                 type="password"
                 placeholder="* * * * *"
                 id="pass-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 onClick={handleShowPassword}
@@ -66,7 +101,10 @@ export default function Login() {
             <div className="ms-2 text-[#06060680] text-[16px]">Remember me</div>
           </div>
           <div>
-            <button className="gradient-bg h-[48px] w-full cursor-pointer font-medium text-[white]">
+            <button
+              onClick={handleLogin}
+              className="gradient-bg h-[48px] w-full cursor-pointer font-medium text-[white]"
+            >
               Log in
             </button>
           </div>

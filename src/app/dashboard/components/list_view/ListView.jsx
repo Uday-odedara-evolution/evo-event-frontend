@@ -1,5 +1,6 @@
 import { ForwardIcon, PreviousIcon } from "@/assets/svg";
 import { EventListItem } from "@/components";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
 
 const ListView = ({
@@ -10,8 +11,14 @@ const ListView = ({
   setCurrentPage,
 }) => {
   const [pages, setPages] = useState([]);
+  const isMobileView = useMediaQuery("(max-width:600px)");
+  console.log("isMobileView", isMobileView);
   console.log("currentPage", currentPage);
   const totalPages = Math.ceil(data?.totalCount / 10);
+
+  const columnWidth = isMobileView
+    ? "200px 200px minmax(400px, 1fr)"
+    : "400px 300px minmax(200px, 1fr)";
 
   useEffect(() => {
     console.log("totalPages", totalPages);
@@ -36,10 +43,7 @@ const ListView = ({
   return (
     <div className="h-full bg-white rounded-2xl flex flex-col overflow-auto p-2">
       <div className="">
-        <div
-          className=" grid"
-          style={{ gridTemplateColumns: "200px 200px minmax(400px, 1fr)" }}
-        >
+        <div className=" grid" style={{ gridTemplateColumns: columnWidth }}>
           <span className="border-b-[1px] border-b-[#EAEAEA] text-[12px] font-sans font-medium pb-2">
             Event Name
           </span>
@@ -60,6 +64,7 @@ const ListView = ({
                 handleClickDelete={handleClickDelete}
                 item={item}
                 handleClickUpdate={handleClickUpdate}
+                columnWidth={columnWidth}
               />
             );
           })}

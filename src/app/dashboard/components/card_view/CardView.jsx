@@ -32,8 +32,8 @@ const CardView = ({
 
   return (
     <>
-      <div className=" h-full">
-        <div className="flex flex-wrap">
+      <div className=" h-full flex flex-col">
+        <div className="grid lg:grid-cols-3 gap-6">
           {data?.totalCount > 0 &&
             data?.list.map((item) => (
               <EventCard
@@ -44,45 +44,45 @@ const CardView = ({
               />
             ))}
         </div>
-      </div>
-      <div className="flex justify-between items-center">
-        <button
-          onClick={() => handlePageChange("back")}
-          className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
-        >
-          <span>
-            <PreviousIcon />
-          </span>
-          <span className="text-[#06060680] text-[16px] hidden lg:block">
-            Previous
-          </span>
-        </button>
-        <div className="flex gap-1">
-          {pages.map((page) => (
-            <button
-              key={`page-${page}`}
-              style={{
-                backgroundColor: currentPage === page ? "#FD5900" : "unset",
-                color: currentPage === page ? "white" : "#667085",
-              }}
-              className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer"
-            >
-              {page}
-            </button>
-          ))}
-        </div>
+        <div className="flex justify-between items-center mt-auto pt-2">
+          <button
+            onClick={() => handlePageChange("back")}
+            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
+          >
+            <span>
+              <PreviousIcon />
+            </span>
+            <span className="text-[#06060680] text-[16px] hidden lg:block">
+              Previous
+            </span>
+          </button>
+          <div className="flex gap-1">
+            {pages.map((page) => (
+              <button
+                key={`page-${page}`}
+                style={{
+                  backgroundColor: currentPage === page ? "#FD5900" : "unset",
+                  color: currentPage === page ? "white" : "#667085",
+                }}
+                className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer"
+              >
+                {page}
+              </button>
+            ))}
+          </div>
 
-        <button
-          onClick={() => handlePageChange("next")}
-          className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
-        >
-          <span className="text-[#06060680] text-[16px] hidden lg:block">
-            Forward
-          </span>
-          <span>
-            <ForwardIcon />
-          </span>
-        </button>
+          <button
+            onClick={() => handlePageChange("next")}
+            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
+          >
+            <span className="text-[#06060680] text-[16px] hidden lg:block">
+              Forward
+            </span>
+            <span>
+              <ForwardIcon />
+            </span>
+          </button>
+        </div>
       </div>
     </>
   );

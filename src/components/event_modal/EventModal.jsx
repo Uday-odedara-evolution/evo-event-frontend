@@ -80,13 +80,15 @@ export default function EventModal({
   };
 
   const handleSave = () => {
+    const userDataString = localStorage.getItem("userdata");
+    const userData = JSON.parse(userDataString);
     const payload = new FormData();
 
     payload.append("name", eventName);
     payload.append("file", file);
     payload.append("categoryId", eventCategory);
     console.log("eventCategory", eventCategory);
-    payload.append("creatorId", 1);
+    payload.append("creatorId", userData.data.userId);
     payload.append("date", eventDate);
 
     APICall.post("/event", payload, {
@@ -189,7 +191,7 @@ export default function EventModal({
             <select
               value={eventCategory}
               onChange={(e) => setEventCategory(e.target.value)}
-              defaultValue={1}
+              // defaultValue={1}
               className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
             >
               {Object.entries(EventNames).map(([key, value]) => {

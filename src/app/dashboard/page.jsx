@@ -16,37 +16,91 @@ import { useEffect, useState } from "react";
 import CardView from "./components/card_view/CardView";
 import ListView from "./components/list_view/ListView";
 import APICall from "@/utils/ApiCall";
+import { redirect } from "next/navigation";
+import { useDebounce } from "use-debounce";
+import { EventNames } from "@/constants/constants";
+import { Popper } from "@mui/material";
 
 export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasRecord, setHasRecord] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isCardView, setIsCardView] = useState(false);
+  const [isCardView, setIsCardView] = useState(true);
   const [updatingItem, setUpdatingItem] = useState(null);
   const [eventList, setEventList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [totalCount, setTotalCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dbSearchQuery] = useDebounce(searchQuery, 1000);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  console.log("selectedFilters", selectedFilters);
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
 
   useEffect(() => {
-    getEvents();
+    const userDataString = localStorage.getItem("userdata");
+    const userData = JSON.parse(userDataString);
+    console.log("userData", userData);
+    if (userData) {
+      getEvents();
+    } else {
+      redirect("/login");
+    }
   }, []);
 
-  const getEvents = () => {
+  useEffect(() => {
+    if (searchQuery) {
+      getEvents(searchQuery);
+    } else {
+      getEvents();
+    }
+  }, [dbSearchQuery]);
+
+  useEffect(() => {
+    if (selectedFilters) {
+      const string = selectedFilters.join(",");
+      console.log("string", string);
+      getEvents("", string);
+    }
+  }, [selectedFilters]);
+
+  const getEvents = (query, filters) => {
+    const userDataString = localStorage.getItem("userdata");
+    const userData = JSON.parse(userDataString);
     const params = {
       pageSize: 10,
       pageNumber: 1,
+      creatorId: userData.data.userId,
     };
 
+    if (query) {
+      params.searchQuery = query;
+    }
+
+    if (filters) {
+      params.filters = filters;
+    }
+
+    console.log("params", params);
     APICall.get("/event", { params })
       .then((res) => {
         console.log("res", res);
         setEventList(res.data);
         setHasRecord(res?.data?.totalCount > 0);
+        if (res?.data?.totalCount <= 0) {
+          setAnchorEl(null);
+        }
         // setTotalCount(res?.data?.totalCount);
       })
       .catch((err) => {
         console.log("err", err);
+        setAnchorEl(null);
       });
   };
 
@@ -73,9 +127,20 @@ export default function Dashboard() {
     getEvents();
   };
 
+  const handleClickFilterItem = (val) => {
+    console.log("val", val);
+    const isExists = selectedFilters.includes(val);
+    console.log("isExists", isExists);
+    if (isExists) {
+      setSelectedFilters((prev) => prev.filter((item) => item !== val));
+    } else {
+      setSelectedFilters((prev) => [...prev, val]);
+    }
+  };
+
   return (
-    <div className="h-full">
-      <div className=" bg-[#FFF1EA] h-[100%] p-3 lg:px-20 flex flex-col gap-2 w-[100vw]">
+    <div className="h-full flex">
+      <div className="  h-[100%] p-3 lg:px-20 flex flex-col gap-2 w-[100vw]">
         {isSearching ? (
           <div className="bg-white p-2 px-4 flex gap-1 rounded-[16px] items-center shadow-md shadow-[#00000014]">
             <div>
@@ -86,10 +151,15 @@ export default function Dashboard() {
                 type="text"
                 className="outline-0 ms-2"
                 placeholder="Search here.."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="ms-auto">
-              <span>
+              <span
+                className="cursor-pointer"
+                onClick={() => setIsSearching(false)}
+              >
                 <CrossIcon />
               </span>
             </div>
@@ -100,7 +170,10 @@ export default function Dashboard() {
               <EvoEventIcon />
             </div>
             <div className="ms-auto flex items-center justify-center rounded-md border-[1px] p-1 h-full border-[#EAEAEA]">
-              <button className="flex h-[18px] w-[18px] max-h-[40px] max-w-[40px] cursor-pointer">
+              <button
+                onClick={() => setIsSearching(true)}
+                className="flex h-[18px] w-[18px] max-h-[40px] max-w-[40px] cursor-pointer"
+              >
                 <SearchIcon />
               </button>
               <div className="hidden lg:block">
@@ -108,6 +181,8 @@ export default function Dashboard() {
                   type="text"
                   className="outline-0 ms-2"
                   placeholder="Search here.."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
@@ -134,17 +209,35 @@ export default function Dashboard() {
                     </div>
                     <div className="flex gap-2 justify-between mt-2 lg:mt-0 lg:items-center">
                       <div className="flex gap-2">
-                        <span className="rounded-[8px] border-[1px] border-[#06060680] p-2">
-                          <FilterButtonIcon />
-                        </span>
+                        <div
+                          onClick={handleClick}
+                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 cursor-pointer flex"
+                        >
+                          <span>
+                            <FilterButtonIcon />
+                          </span>
+                          <span className="text-[#06060680] text-[16px] hidden lg:block">
+                            Filter
+                          </span>
+                        </div>
                         <button
                           onClick={() => setIsCardView((prev) => !prev)}
-                          className="rounded-[8px] border-[1px] border-[#06060680] p-2"
+                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 cursor-pointer"
                         >
                           {isCardView ? (
-                            <CardViewButtonIcon />
+                            <div className="flex gap-2">
+                              <CardViewButtonIcon />
+                              <span className="text-[#06060680] text-[16px] hidden lg:block">
+                                Card view
+                              </span>
+                            </div>
                           ) : (
-                            <ListViewButtonIcon />
+                            <div className="flex gap-2">
+                              <ListViewButtonIcon />
+                              <span className="text-[#06060680] text-[16px] hidden lg:block">
+                                List view
+                              </span>
+                            </div>
                           )}
                         </button>
                       </div>
@@ -229,6 +322,30 @@ export default function Dashboard() {
         onDelete={handleDeleteItem}
         itemId={updatingItem?.id}
       />
+      <Popper id={id} open={open} anchorEl={anchorEl}>
+        <div className="bg-amber-500 p-3 rounded-xl mt-1">
+          <div>
+            <span className="text-white">Select Categories</span>
+          </div>
+          <div className="flex gap-2 mt-2">
+            {Object.entries(EventNames).map(([key, value]) => {
+              const isActive = selectedFilters.includes(key);
+              return (
+                <div
+                  key={`filter-option-${key}`}
+                  className="text-white text-[12px] rounded-xl p-2 cursor-pointer"
+                  style={{
+                    backgroundColor: isActive ? "green" : "gray",
+                  }}
+                  onClick={() => handleClickFilterItem(key)}
+                >
+                  {value}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Popper>
     </div>
   );
 }

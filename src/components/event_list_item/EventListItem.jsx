@@ -1,13 +1,18 @@
 import { DeleteIcon, UpdateIcon } from "@/assets/svg";
 import { EventNames } from "@/constants/constants";
 
-const EventListItem = ({ handleClickUpdate, handleClickDelete, item }) => {
+const EventListItem = ({
+  handleClickUpdate,
+  handleClickDelete,
+  item,
+  columnWidth,
+}) => {
   const formattedDate = item?.event_date ? item?.event_date.split("T")[0] : "";
 
   return (
     <div
       className=" grid py-2 items-center"
-      style={{ gridTemplateColumns: "200px 200px minmax(400px, 1fr)" }}
+      style={{ gridTemplateColumns: columnWidth }}
     >
       <div className="flex gap-2 items-center">
         <span className="h-[56px] w-[56px]">
@@ -28,10 +33,16 @@ const EventListItem = ({ handleClickUpdate, handleClickDelete, item }) => {
         <span className="text-[16px] text-[#06060680] font-sans">
           {EventNames[item?.event_category_id] || "-"}
         </span>
-        <button className="ms-auto" onClick={() => handleClickDelete(item)}>
+        <button
+          className="ms-auto cursor-pointer"
+          onClick={() => handleClickDelete(item)}
+        >
           <DeleteIcon />
         </button>
-        <button className="ms-1" onClick={() => handleClickUpdate(item)}>
+        <button
+          className="ms-1 cursor-pointer"
+          onClick={() => handleClickUpdate(item)}
+        >
           <UpdateIcon />
         </button>
       </div>
