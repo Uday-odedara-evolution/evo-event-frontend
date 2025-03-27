@@ -26,7 +26,7 @@ const DeleteModal = ({
           <span className="font-sans font-medium text-[20px]">Delete ?</span>
           <button
             onClick={onClose}
-            className="border-[1px] rounded-[8px] px-2 border-[#06060680] py-0 cursor-pointer"
+            className="border-[1px] rounded-[8px] px-2 border-[#06060680] py-0 cursor-pointer btn-hover-1"
           >
             x
           </button>

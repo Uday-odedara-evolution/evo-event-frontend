@@ -21,6 +21,8 @@ import { useDebounce } from "use-debounce";
 import { EventNames } from "@/constants/constants";
 import { Popper } from "@mui/material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { eventEmitter } from "@/utils/EventEmitter";
+import AppLoader from "@/components/app_loader/AppLoader";
 
 export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
@@ -35,7 +37,6 @@ export default function Dashboard() {
   const [dbSearchQuery] = useDebounce(searchQuery, 1000);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState([]);
-  console.log("selectedFilters", selectedFilters);
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -47,7 +48,6 @@ export default function Dashboard() {
   useEffect(() => {
     const userDataString = localStorage.getItem("userdata");
     const userData = JSON.parse(userDataString);
-    console.log("userData", userData);
     if (userData) {
       getEvents();
     } else {
@@ -70,7 +70,6 @@ export default function Dashboard() {
   useEffect(() => {
     if (selectedFilters) {
       const string = selectedFilters.join(",");
-      console.log("string", string);
       getEvents("", string);
     }
   }, [selectedFilters]);
@@ -92,10 +91,10 @@ export default function Dashboard() {
       params.filters = filters;
     }
 
-    console.log("params", params);
+    eventEmitter.dispatch("loader", true);
+
     APICall.get("/event", { params })
       .then((res) => {
-        console.log("res", res);
         setEventList(res.data);
         setHasRecord(res?.data?.totalCount > 0);
         if (res?.data?.totalCount <= 0) {
@@ -104,19 +103,19 @@ export default function Dashboard() {
         // setTotalCount(res?.data?.totalCount);
       })
       .catch((err) => {
-        console.log("err", err);
         setAnchorEl(null);
+      })
+      .finally(() => {
+        eventEmitter.dispatch("loader", false);
       });
   };
 
   const handleClickUpdate = (item) => {
-    console.log("item", item);
     setUpdatingItem(item);
     setIsAddModalOpen(true);
   };
 
   const handleClickDelete = (item) => {
-    console.log("item", item);
     setUpdatingItem(item);
     setIsDeleteModalOpen(true);
   };
@@ -133,9 +132,7 @@ export default function Dashboard() {
   };
 
   const handleClickFilterItem = (val) => {
-    console.log("val", val);
     const isExists = selectedFilters.includes(val);
-    console.log("isExists", isExists);
     if (isExists) {
       setSelectedFilters((prev) => prev.filter((item) => item !== val));
     } else {
@@ -353,6 +350,7 @@ export default function Dashboard() {
           </div>
         </ClickAwayListener>
       </Popper>
+      <AppLoader />
     </div>
   );
 }

@@ -10,15 +10,12 @@ export default function Login() {
 
   const handleShowPassword = () => {
     const el = document.getElementById("pass-input");
-    console.log("el", el.type);
 
     if (el.type === "password") {
       el.type = "text";
     } else {
       el.type = "password";
     }
-
-    console.log("show");
   };
 
   const handleLogin = () => {
@@ -30,15 +27,12 @@ export default function Login() {
 
     APICall.post("/auth/login", payload)
       .then((res) => {
-        console.log("res", res);
         const userData = res?.data;
         localStorage.setItem("userdata", JSON.stringify(userData));
 
         redirectLink = "/dashboard";
       })
-      .catch((err) => {
-        console.log("err", err);
-      })
+      .catch((err) => {})
       .finally(() => {
         if (redirectLink) {
           redirect(redirectLink);

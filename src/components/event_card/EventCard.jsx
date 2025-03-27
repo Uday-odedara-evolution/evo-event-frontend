@@ -5,9 +5,9 @@ const EventCard = ({ handleClickUpdate, handleClickDelete, item }) => {
   const formattedDate = item?.event_date ? item?.event_date.split("T")[0] : "";
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 w-full lg:w-auto">
       <div className="w-full lg:max-w-[300px] bg-white flex flex-col p-3 rounded-xl gap-1">
-        <div className="max-w-full h-[200px] w-[300px]">
+        <div className="max-w-full  w-full h-[200px] lg:w-[300px]">
           <img
             className="h-full w-full object-fill rounded-xl m-auto"
             src={`http://localhost:3000/uploads/${item?.image_url}`}

@@ -19,7 +19,6 @@ const CardView = ({
       arr.push(i);
     }
     setPages(arr);
-    console.log("arr", arr);
   }, [data]);
 
   const handlePageChange = (type) => {
@@ -33,7 +32,7 @@ const CardView = ({
   return (
     <>
       <div className=" h-full flex flex-col">
-        <div className="w-full flex flex-wrap items-center gap-4">
+        <div className="w-full flex flex-col lg:flex-row lg:flex-wrap items-center gap-4">
           {data?.totalCount > 0 &&
             data?.list.map((item) => (
               <EventCard

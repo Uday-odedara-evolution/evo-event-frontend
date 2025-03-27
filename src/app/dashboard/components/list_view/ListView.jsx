@@ -12,8 +12,6 @@ const ListView = ({
 }) => {
   const [pages, setPages] = useState([]);
   const isMobileView = useMediaQuery("(max-width:600px)");
-  console.log("isMobileView", isMobileView);
-  console.log("currentPage", currentPage);
   const totalPages = Math.ceil(data?.totalCount / 10);
 
   const columnWidth = isMobileView
@@ -21,15 +19,12 @@ const ListView = ({
     : "400px 300px minmax(200px, 1fr)";
 
   useEffect(() => {
-    console.log("totalPages", totalPages);
-
     const arr = [];
 
     for (let i = 1; i <= totalPages; i++) {
       arr.push(i);
     }
     setPages(arr);
-    console.log("arr", arr);
   }, [data]);
 
   const handlePageChange = (type) => {

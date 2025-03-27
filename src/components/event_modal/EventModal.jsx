@@ -1,24 +1,45 @@
-import { CalendarIcon, DownArrowIcon, UploadImageIcon } from "@/assets/svg";
+import {
+  CalendarIcon,
+  CrossIcon,
+  DownArrowIcon,
+  UploadImageIcon,
+} from "@/assets/svg";
 import { ModalView } from "@/components";
 import { EventNames } from "@/constants/constants";
 import APICall from "@/utils/ApiCall";
+import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
+import { Popper } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 export default function EventModal({
   isOpen = false,
   onClose = () => {},
   updatingItem = null,
 }) {
-  console.log("updatingItem", updatingItem);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm();
+  console.log("errors", errors);
+
   const [file, setFile] = useState(null);
   const [fileURL, setFileURL] = useState(null);
-  console.log("fileURL", fileURL);
   const [eventName, setEventName] = useState("");
-  console.log("eventName", eventName);
   const [eventDate, setEventDate] = useState("");
   const [eventCategory, setEventCategory] = useState(1);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  console.log("eventCategory", eventCategory);
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "category-pop" : undefined;
+
   // const fileUrl = file ? URL.createObjectURL(file) : null;
 
   useEffect(() => {
@@ -29,16 +50,20 @@ export default function EventModal({
       setFileURL(null);
     }
   }, [isOpen]);
+  console.log("updatingItem", updatingItem);
 
   useEffect(() => {
     if (updatingItem) {
       const formattedDate = updatingItem.event_date.split("T")[0];
+      const catName = EventNames[updatingItem.event_category_id];
 
-      console.log("updatingItem", updatingItem);
-      setEventName(updatingItem.name);
+      // setEventName(updatingItem.name);
       setEventCategory(updatingItem.event_category_id);
-      setEventDate(formattedDate);
+      // setEventDate(formattedDate);
       setFileURL(`http://localhost:3000/uploads/${updatingItem.image_url}`);
+      setValue("name", updatingItem.name);
+      setValue("date", formattedDate);
+      setValue("event_category", catName);
     } else {
       setEventName("");
       setEventCategory(1);
@@ -47,7 +72,6 @@ export default function EventModal({
     }
   }, [updatingItem]);
 
-  console.log("file", file);
   const fileRef = useRef();
   if (!isOpen) {
     return null;
@@ -58,26 +82,28 @@ export default function EventModal({
   };
 
   const handleFileChange = (e) => {
-    console.log("e", e);
-    console.log("e", e.target.files);
     const [file] = e.target.files;
+    console.log("file", file);
     const fileUrl = URL.createObjectURL(file);
 
     setFile(file);
     setFileURL(fileUrl);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = (data) => {
     const payload = new FormData();
+    const userDataString = localStorage.getItem("userdata");
+    const userData = JSON.parse(userDataString);
 
-    payload.append("name", eventName);
+    payload.append("name", data.name);
+    payload.append("date", data.date);
+
     payload.append("id", updatingItem.id);
     if (file) {
       payload.append("file", file);
     }
     payload.append("categoryId", eventCategory);
-    payload.append("creatorId", 1);
-    payload.append("date", eventDate);
+    payload.append("creatorId", userData.data.userId);
 
     APICall.put("/event", payload, {
       headers: {
@@ -88,17 +114,16 @@ export default function EventModal({
     });
   };
 
-  const handleSave = () => {
+  const handleSave = (data) => {
     const userDataString = localStorage.getItem("userdata");
     const userData = JSON.parse(userDataString);
     const payload = new FormData();
+    payload.append("name", data.name);
+    payload.append("date", data.date);
 
-    payload.append("name", eventName);
     payload.append("file", file);
     payload.append("categoryId", eventCategory);
-    console.log("eventCategory", eventCategory);
     payload.append("creatorId", userData.data.userId);
-    payload.append("date", eventDate);
 
     APICall.post("/event", payload, {
       headers: {
@@ -109,26 +134,65 @@ export default function EventModal({
     });
   };
 
+  const handleSelectCategory = (catId, catName) => {
+    console.log("catId", catId);
+    setEventCategory(catId);
+    setValue("event_category", catName);
+  };
+
+  const checkError = (field) => {
+    const isAvailable = errors.hasOwnProperty(field);
+    console.log("isAvailable", isAvailable);
+
+    return !!isAvailable;
+  };
+
+  const handleRemoveImage = () => {
+    setFile(null);
+    setFileURL(null);
+  };
+
+  const handleChangeType = (type) => {
+    const el = document.getElementById("date-selector");
+
+    if (type === "text") {
+      el.type = "text";
+    }
+    if (type === "date") {
+      el.type = "date";
+      setTimeout(() => {
+        const newEl = document.getElementById("date-selector");
+        newEl.click();
+      }, 200);
+    }
+  };
+
   return (
     <ModalView isOpen={isOpen} onClose={onClose}>
-      <div className="p-3 flex flex-col gap-2 bg-white mt-0">
+      <div className="p-3 flex flex-col gap-2 bg-white mt-0 h-full">
         <div className="flex justify-between items-center">
           <span className="font-sans font-medium text-[20px]">New Event</span>
           <button
             onClick={onClose}
-            className="border-[1px] rounded-[8px] px-2 border-[#06060680] py-0 cursor-pointer"
+            className="border-[1px] rounded-[8px] px-2 border-[#06060680] py-0 cursor-pointer btn-hover-1"
           >
             x
           </button>
         </div>
         <div className="relative">
           {fileURL ? (
-            <div>
+            <div className="relative">
               <img
-                className="rounded-xl lg:h-[200px] w-full object-fill"
+                className="rounded-xl h-[240px] w-full object-fill z-0 relative"
                 src={fileURL}
                 alt=""
               />
+              <button
+                className="absolute top-0 right-0 p-2 bg-red-800 m-2 rounded-2xl"
+                onClick={handleRemoveImage}
+              >
+                <CrossIcon stroke="#fff" strokeOpacity={1} />
+              </button>
               <div className="mt-2 ">
                 <button
                   onClick={handleUploadFile}
@@ -139,32 +203,45 @@ export default function EventModal({
               </div>
             </div>
           ) : (
-            <button
-              onClick={handleUploadFile}
-              className="h-[240px] w-full max-w-[528px] cursor-pointer"
-            >
-              <UploadImageIcon />
-            </button>
+            <div className="relative">
+              <button
+                onClick={handleUploadFile}
+                style={{ pointerEvents: "none" }}
+                className="h-[240px] w-full max-w-[528px] cursor-pointer relative z-0 dashed-border"
+              >
+                <span>
+                  <UploadImageIcon />
+                </span>
+                <span className="text-[#06060680] text-[20px] font-sans lg:hidden">
+                  Click to upload !
+                </span>
+                <span className="text-[#06060680] text-[20px] font-sans hidden lg:block">
+                  Drop an image here or click to upload !
+                </span>
+              </button>
+              <input
+                className="opacity-0  absolute top-0 bottom-0 right-0 left-0 z-10 cursor-pointer"
+                type="file"
+                name=""
+                onChange={handleFileChange}
+                ref={fileRef}
+                id="file-input"
+                accept="image/png, image/gif, image/jpeg"
+              />
+            </div>
           )}
-          <input
-            className="hidden"
-            type="file"
-            name=""
-            onChange={handleFileChange}
-            ref={fileRef}
-            id="file-input"
-            accept="image/png, image/gif, image/jpeg"
-          />
         </div>
         <div>
           <div className="text-[#06060680] text-[16px]">Event Name</div>
           <div className="mt-1">
             <input
-              className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
+              className="bg-white border-1 w-full px-[16px] py-[8px] rounded-[12px] outline-0"
               type="text"
               placeholder="Ex. Fluffy’s Stand up"
-              value={eventName}
-              onChange={(e) => setEventName(e.target.value)}
+              style={{ borderColor: checkError("name") ? "red" : "#06060620" }}
+              // value={eventName}
+              // onChange={(e) => setEventName(e.target.value)}
+              {...register("name", { required: true })}
             />
           </div>
         </div>
@@ -172,11 +249,18 @@ export default function EventModal({
           <div className="text-[#06060680] text-[16px]">Event Date</div>
           <div className="mt-1 relative">
             <input
-              className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
-              type="date"
-              value={eventDate}
+              className="bg-white border-1 w-full px-[16px] py-[8px] rounded-[12px] outline-0"
+              // type="date"
+              // value={eventDate}
+              // onChange={(e) => setEventDate(e.target.value)}
+              id="date-selector"
+              type="text"
+              onFocus={() => handleChangeType("date")}
+              onClick={() => handleChangeType("date")}
+              onBlur={() => handleChangeType("text")}
+              {...register("date", { required: true })}
               placeholder="Select a date"
-              onChange={(e) => setEventDate(e.target.value)}
+              style={{ borderColor: checkError("date") ? "red" : "#06060620" }}
             />
             <button className="absolute z-0 top-0 right-0 bottom-0 flex items-center pe-2 cursor-pointer">
               <CalendarIcon />
@@ -185,53 +269,44 @@ export default function EventModal({
         </div>
         <div>
           <div className="text-[#06060680] text-[16px]">Event Category</div>
-          <div className="mt-1 relative">
-            {/* <input
-              className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
+          <div className="mt-1 relative " onClick={handleClick}>
+            <input
+              className="bg-white border-1 w-full px-[16px] py-[8px] rounded-[12px] outline-0 pointer-events-none cursor-pointer"
               type="text"
               placeholder="Select a option..."
-            /> */}
-            <button
-              // onClick={handleShowPassword}
-              className="absolute top-0 right-0 bottom-0 flex items-center pe-2 cursor-pointer"
-            >
+              {...register("event_category", { required: true })}
+              style={{
+                borderColor: open
+                  ? "#FD5900"
+                  : checkError("event_category")
+                  ? "red"
+                  : "#06060620",
+              }}
+            />
+            <button className="absolute top-0 right-0 bottom-0 flex items-center pe-2 cursor-pointer">
               <DownArrowIcon />
             </button>
-            <select
-              value={eventCategory}
-              onChange={(e) => setEventCategory(e.target.value)}
-              // defaultValue={1}
-              className="bg-white border-2 w-full px-[16px] py-[8px] rounded-[12px] border-[#06060620] outline-0"
-            >
-              {Object.entries(EventNames).map(([key, value]) => {
-                return (
-                  <option key={`event-option-${key}`} value={key}>
-                    {value}
-                  </option>
-                );
-              })}
-            </select>
           </div>
         </div>
         <div className="h-full mt-auto">
           <div className="h-full flex justify-between items-end gap-2">
             <button
               onClick={onClose}
-              className="flex-1 bg-[#EAEAEA] font-medium cursor-pointer text-[#06060680] rounded-[8px]  text-[20px] py-1"
+              className="flex-1 bg-[#EAEAEA] font-medium cursor-pointer text-[#06060680] rounded-[8px]  text-[20px] py-1 btn-hover-1"
             >
               Cancel
             </button>
             {updatingItem ? (
               <button
-                onClick={handleUpdate}
-                className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1"
+                onClick={handleSubmit(handleUpdate)}
+                className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1 btn-hover-2"
               >
                 Update
               </button>
             ) : (
               <button
-                onClick={handleSave}
-                className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1"
+                onClick={handleSubmit(handleSave)}
+                className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1 btn-hover-2"
               >
                 Save
               </button>
@@ -239,6 +314,30 @@ export default function EventModal({
           </div>
         </div>
       </div>
+      <Popper id={id} open={open} anchorEl={anchorEl} sx={{ width: "100%" }}>
+        <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+          <div className="w-full p-3 rounded-xl">
+            <div className="flex border-1 border-[rgba(0,0,0,0.15)] flex-col p-[8px] gap-2 rounded-xl">
+              {Object.entries(EventNames).map(([key, value]) => {
+                const isActive = key === eventCategory;
+                return (
+                  <div
+                    key={`event-option-${key}`}
+                    className="text-[16px] p-[6px] cursor-pointer rounded-lg"
+                    style={{
+                      backgroundColor: isActive ? "#FFF1EA" : "white",
+                      color: isActive ? "#FD5900" : "#06060680",
+                    }}
+                    onClick={() => handleSelectCategory(key, value)}
+                  >
+                    {value}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </ClickAwayListener>
+      </Popper>
     </ModalView>
   );
 }
