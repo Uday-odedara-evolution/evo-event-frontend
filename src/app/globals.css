@@ -31,7 +31,7 @@ html {
 }
 
 .gradient-bg {
-  background: rgb(253, 89, 0);
+  background: #fd5900;
   background: linear-gradient(
     90deg,
     rgba(253, 89, 0, 1) 0%,
@@ -42,11 +42,6 @@ html {
 
   box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.25) inset;
   cursor: pointer;
-}
-
-.gradient-bg:hover {
-  transition: all ease-in 0.5s;
-  transform: scale(1.1);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -67,4 +62,34 @@ select {
   -moz-appearance: none;
   text-indent: 1px;
   text-overflow: "";
+}
+
+.btn-hover-1:hover {
+  background-color: #fd5900 !important;
+  border-color: white !important;
+  color: white !important;
+
+  cursor: pointer;
+}
+
+.btn-hover-1:hover * {
+  color: white !important;
+}
+
+.btn-hover-1:hover svg path {
+  stroke: white;
+  stroke-opacity: 1;
+}
+
+.btn-hover-2:hover {
+  background-color: white !important;
+  border-color: #fd5900;
+  color: #fd5900;
+  background: white;
+  cursor: pointer;
+  /* box-shadow: none; */
+}
+
+.btn-hover-2:hover * {
+  color: #fd5900;
 }

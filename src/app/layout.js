@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono, Newsreader, Inter } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "./QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${inter.variable} ${geistMono.variable} ${newsReader.variable} antialiased`}
       >
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

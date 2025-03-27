@@ -21,7 +21,7 @@ const DeleteModal = ({
 
   return (
     <ModalView isOpen={isOpen} onClose={onClose} isDeleteModal>
-      <div className="p-3 flex flex-col gap-2">
+      <div className="p-3 flex flex-col gap-2 mt-[inherit] w-[inherit] bg-white max-w-[inherit]">
         <div className="flex justify-between items-center">
           <span className="font-sans font-medium text-[20px]">Delete ?</span>
           <button

@@ -33,7 +33,7 @@ const CardView = ({
   return (
     <>
       <div className=" h-full flex flex-col">
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="w-full flex flex-wrap items-center gap-4">
           {data?.totalCount > 0 &&
             data?.list.map((item) => (
               <EventCard
@@ -47,7 +47,8 @@ const CardView = ({
         <div className="flex justify-between items-center mt-auto pt-2">
           <button
             onClick={() => handlePageChange("back")}
-            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
+            style={{ pointerEvents: currentPage === 1 ? "none" : "all" }}
+            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
           >
             <span>
               <PreviousIcon />
@@ -63,8 +64,10 @@ const CardView = ({
                 style={{
                   backgroundColor: currentPage === page ? "#FD5900" : "unset",
                   color: currentPage === page ? "white" : "#667085",
+                  pointerEvents: currentPage === page ? "none" : "all",
                 }}
-                className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer"
+                onClick={() => setCurrentPage(page)}
+                className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] btn-hover-2"
               >
                 {page}
               </button>
@@ -73,7 +76,10 @@ const CardView = ({
 
           <button
             onClick={() => handlePageChange("next")}
-            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
+            style={{
+              pointerEvents: currentPage === pages.at(-1) ? "none" : "all",
+            }}
+            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
           >
             <span className="text-[#06060680] text-[16px] hidden lg:block">
               Forward

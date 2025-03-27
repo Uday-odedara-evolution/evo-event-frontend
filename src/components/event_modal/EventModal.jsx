@@ -22,6 +22,15 @@ export default function EventModal({
   // const fileUrl = file ? URL.createObjectURL(file) : null;
 
   useEffect(() => {
+    if (!isOpen) {
+      setEventName("");
+      setEventCategory(1);
+      setEventDate("");
+      setFileURL(null);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (updatingItem) {
       const formattedDate = updatingItem.event_date.split("T")[0];
 
@@ -102,7 +111,7 @@ export default function EventModal({
 
   return (
     <ModalView isOpen={isOpen} onClose={onClose}>
-      <div className="p-3 flex flex-col gap-2">
+      <div className="p-3 flex flex-col gap-2 bg-white mt-0">
         <div className="flex justify-between items-center">
           <span className="font-sans font-medium text-[20px]">New Event</span>
           <button

@@ -20,6 +20,7 @@ import { redirect } from "next/navigation";
 import { useDebounce } from "use-debounce";
 import { EventNames } from "@/constants/constants";
 import { Popper } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
@@ -63,6 +64,10 @@ export default function Dashboard() {
   }, [dbSearchQuery]);
 
   useEffect(() => {
+    getEvents();
+  }, [currentPage]);
+
+  useEffect(() => {
     if (selectedFilters) {
       const string = selectedFilters.join(",");
       console.log("string", string);
@@ -74,8 +79,8 @@ export default function Dashboard() {
     const userDataString = localStorage.getItem("userdata");
     const userData = JSON.parse(userDataString);
     const params = {
-      pageSize: 10,
-      pageNumber: 1,
+      pageSize: 9,
+      pageNumber: currentPage,
       creatorId: userData.data.userId,
     };
 
@@ -211,7 +216,7 @@ export default function Dashboard() {
                       <div className="flex gap-2">
                         <div
                           onClick={handleClick}
-                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 cursor-pointer flex"
+                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 flex btn-hover-1"
                         >
                           <span>
                             <FilterButtonIcon />
@@ -222,7 +227,7 @@ export default function Dashboard() {
                         </div>
                         <button
                           onClick={() => setIsCardView((prev) => !prev)}
-                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 cursor-pointer"
+                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 btn-hover-1"
                         >
                           {isCardView ? (
                             <div className="flex gap-2">
@@ -247,7 +252,7 @@ export default function Dashboard() {
                             setUpdatingItem(null);
                             setIsAddModalOpen(true);
                           }}
-                          className="gradient-bg px-6 font-sans py-2 text-[16px] text-white"
+                          className="gradient-bg px-6 font-sans py-2 text-[16px] text-white btn-hover-2"
                         >
                           Add New Event
                         </button>
@@ -290,7 +295,7 @@ export default function Dashboard() {
                         setUpdatingItem(null);
                         setIsAddModalOpen(true);
                       }}
-                      className="gradient-bg px-6 font-sans py-2 text-[16px] text-white"
+                      className="gradient-bg px-6 font-sans py-2 text-[16px] text-white btn-hover-2"
                     >
                       Add New Event
                     </button>
@@ -323,28 +328,30 @@ export default function Dashboard() {
         itemId={updatingItem?.id}
       />
       <Popper id={id} open={open} anchorEl={anchorEl}>
-        <div className="bg-amber-500 p-3 rounded-xl mt-1">
-          <div>
-            <span className="text-white">Select Categories</span>
+        <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+          <div className="bg-amber-500 p-3 rounded-xl mt-1">
+            <div>
+              <span className="text-white">Select Categories</span>
+            </div>
+            <div className="flex gap-2 mt-2">
+              {Object.entries(EventNames).map(([key, value]) => {
+                const isActive = selectedFilters.includes(key);
+                return (
+                  <div
+                    key={`filter-option-${key}`}
+                    className="text-white text-[10px] rounded-xl px-3 py-1 cursor-pointer"
+                    style={{
+                      backgroundColor: isActive ? "green" : "gray",
+                    }}
+                    onClick={() => handleClickFilterItem(key)}
+                  >
+                    {value}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <div className="flex gap-2 mt-2">
-            {Object.entries(EventNames).map(([key, value]) => {
-              const isActive = selectedFilters.includes(key);
-              return (
-                <div
-                  key={`filter-option-${key}`}
-                  className="text-white text-[12px] rounded-xl p-2 cursor-pointer"
-                  style={{
-                    backgroundColor: isActive ? "green" : "gray",
-                  }}
-                  onClick={() => handleClickFilterItem(key)}
-                >
-                  {value}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        </ClickAwayListener>
       </Popper>
     </div>
   );

@@ -55,7 +55,7 @@ const ListView = ({
           </span>
         </div>
       </div>
-      <div className="h-full">
+      <div className="h-full flex flex-col">
         {data?.totalCount > 0 &&
           data?.list.map((item) => {
             return (
@@ -68,43 +68,49 @@ const ListView = ({
               />
             );
           })}
-      </div>
-      <div className="flex justify-between items-center">
-        <button
-          onClick={() => handlePageChange("prev")}
-          className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
-        >
-          <span>
-            <PreviousIcon />
-          </span>
-          <span className="text-[#06060680] text-[16px] hidden lg:block">
-            Previous
-          </span>
-        </button>
-        <div className="flex gap-1">
-          {pages.map((page) => (
-            <button
-              key={`page-${page}`}
-              style={{
-                backgroundColor: currentPage === page ? "#FD5900" : "unset",
-                color: currentPage === page ? "white" : "#667085",
-              }}
-              className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] cursor-pointer"
-            >
-              {page}
-            </button>
-          ))}
-        </div>
-        <div
-          onClick={() => handlePageChange("next")}
-          className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2"
-        >
-          <span className="text-[#06060680] text-[16px] hidden lg:block">
-            Forward
-          </span>
-          <span>
-            <ForwardIcon />
-          </span>
+        <div className="flex justify-between items-center mt-auto">
+          <button
+            onClick={() => handlePageChange("back")}
+            style={{ pointerEvents: currentPage === 1 ? "none" : "all" }}
+            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
+          >
+            <span>
+              <PreviousIcon />
+            </span>
+            <span className="text-[#06060680] text-[16px] hidden lg:block">
+              Previous
+            </span>
+          </button>
+          <div className="flex gap-1">
+            {pages.map((page) => (
+              <button
+                key={`page-${page}`}
+                style={{
+                  backgroundColor: currentPage === page ? "#FD5900" : "unset",
+                  color: currentPage === page ? "white" : "#667085",
+                  pointerEvents: currentPage === page ? "none" : "all",
+                }}
+                onClick={() => setCurrentPage(page)}
+                className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] btn-hover-1"
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => handlePageChange("next")}
+            style={{
+              pointerEvents: currentPage === pages.at(-1) ? "none" : "all",
+            }}
+            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
+          >
+            <span className="text-[#06060680] text-[16px] hidden lg:block">
+              Forward
+            </span>
+            <span>
+              <ForwardIcon />
+            </span>
+          </button>
         </div>
       </div>
     </div>
