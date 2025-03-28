@@ -4,7 +4,7 @@ import APICall from "@/utils/ApiCall";
 import { redirect } from "next/navigation";
 import { useDebounce } from "use-debounce";
 import { eventEmitter } from "@/utils/EventEmitter";
-import { EventNames } from "@/constants/constants";
+import { EventNames, EventDateFilters } from "@/constants/constants";
 import { Popper } from "@mui/material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import AppLoader from "@/components/app_loader/AppLoader";
@@ -16,7 +16,9 @@ import {
   FilterButtonIcon,
   LeafIcon,
   ListViewButtonIcon,
+  LogOutIcon,
   NoRecordIcon,
+  RightIcon,
   SearchIcon,
   UserIcon,
 } from "@/assets/svg";
@@ -36,19 +38,19 @@ const DashboardView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [dbSearchQuery] = useDebounce(searchQuery, 1000);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [userAnchorEl, setUserAnchorEl] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState([]);
+  const [dateFilters, setDateFilters] = useState([]);
 
   const [sortEventName, setSortEventName] = useState("");
-  console.log("sortEventName", sortEventName);
   const [sortEventDate, setSortEventDate] = useState("");
-  console.log("sortEventDate", sortEventDate);
-
+  const userDataString = localStorage.getItem("userdata");
+  const userData = JSON.parse(userDataString);
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
+  const userPopper = Boolean(userAnchorEl);
+  // const id = open ? "simple-popper" : undefined;
 
   useEffect(() => {
-    const userDataString = localStorage.getItem("userdata");
-    const userData = JSON.parse(userDataString);
     if (userData) {
       getEvents();
     } else {
@@ -68,16 +70,10 @@ const DashboardView = () => {
     getEvents();
   }, [currentPage, sortEventDate, sortEventName]);
 
-  useEffect(() => {
-    if (selectedFilters) {
-      const string = selectedFilters.join(",");
-      getEvents("", string);
-    }
-  }, [selectedFilters]);
+  const getEvents = (query) => {
+    const catFilters = selectedFilters.join(",");
+    const dFilters = dateFilters.join(",");
 
-  const getEvents = (query, filters) => {
-    const userDataString = localStorage.getItem("userdata");
-    const userData = JSON.parse(userDataString);
     const params = {
       pageSize: 9,
       pageNumber: currentPage,
@@ -96,8 +92,12 @@ const DashboardView = () => {
       params.searchQuery = query;
     }
 
-    if (filters) {
-      params.filters = filters;
+    if (catFilters) {
+      params.filters = catFilters;
+    }
+
+    if (dFilters) {
+      params.dFilters = dFilters;
     }
 
     eventEmitter.dispatch("loader", true);
@@ -149,7 +149,20 @@ const DashboardView = () => {
     }
   };
 
-  const handleClick = (event) => {
+  const handleClickDateFilterItem = (val) => {
+    const isExists = dateFilters.includes(val);
+    if (isExists) {
+      setDateFilters((prev) => prev.filter((item) => item !== val));
+    } else {
+      setDateFilters((prev) => [...prev, val]);
+    }
+  };
+
+  const handleClick = (event, type) => {
+    if (type === "user") {
+      setUserAnchorEl(userAnchorEl ? null : event.currentTarget);
+      return;
+    }
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
@@ -168,8 +181,20 @@ const DashboardView = () => {
       });
       setSortEventName("");
     }
+  };
 
-    // if (field) setSortingFilters((prev) => ({ ...prev, [field]: sort }));
+  const handleClickLogout = () => {
+    localStorage.clear();
+    redirect("/login");
+  };
+
+  const handleResetFilters = () => {
+    setDateFilters([]);
+    setSelectedFilters([]);
+  };
+  const handleApplyFilters = () => {
+    getEvents();
+    setAnchorEl(null);
   };
 
   return (
@@ -183,7 +208,7 @@ const DashboardView = () => {
             <div>
               <input
                 type="text"
-                className="outline-0 ms-2"
+                className="outline-0 ms-2 border-0!"
                 placeholder="Search here.."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -203,7 +228,7 @@ const DashboardView = () => {
             <div className="h-[40px]">
               <EvoEventIcon />
             </div>
-            <div className="ms-auto flex items-center justify-center rounded-md border-[1px] p-1 h-full border-[#EAEAEA]">
+            <div className="ms-auto w-[40px] lg:w-auto flex items-center justify-center rounded-[12px] border-[1px] p-1 h-full border-[#EAEAEA]">
               <button
                 onClick={() => setIsSearching(true)}
                 className="flex h-[18px] w-[18px] max-h-[40px] max-w-[40px] cursor-pointer"
@@ -213,18 +238,21 @@ const DashboardView = () => {
               <div className="hidden lg:block">
                 <input
                   type="text"
-                  className="outline-0 ms-2"
+                  className="outline-0 ms-2 border-0!"
                   placeholder="Search here.."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
-            <div className="flex items-center justify-center rounded-md  p-1 bg-[#EAEAEA]">
+            <button
+              onClick={(e) => handleClick(e, "user")}
+              className="flex w-[40px]  items-center justify-center rounded-[12px] cursor-pointer p-1 bg-[#EAEAEA] self-stretch"
+            >
               <div>
                 <UserIcon />
               </div>
-            </div>
+            </button>
           </div>
         )}
         {hasRecord ? (
@@ -244,8 +272,8 @@ const DashboardView = () => {
                     <div className="flex gap-2 justify-between mt-2 lg:mt-0 lg:items-center">
                       <div className="flex gap-2">
                         <div
-                          onClick={handleClick}
-                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 flex btn-hover-1"
+                          onClick={(e) => handleClick(e)}
+                          className="rounded-[8px] border-[1px] border-[#EAEAEA] p-2 flex btn-hover-1"
                         >
                           <span>
                             <FilterButtonIcon />
@@ -256,7 +284,7 @@ const DashboardView = () => {
                         </div>
                         <button
                           onClick={() => setIsCardView((prev) => !prev)}
-                          className="rounded-[8px] border-[1px] border-[#06060680] p-2 btn-hover-1"
+                          className="rounded-[8px] border-[1px] border-[#EAEAEA] p-2 btn-hover-1"
                         >
                           {isCardView ? (
                             <div className="flex gap-2">
@@ -361,32 +389,118 @@ const DashboardView = () => {
         onDelete={handleDeleteItem}
         itemId={updatingItem?.id}
       />
-      <Popper id={id} open={open} anchorEl={anchorEl}>
+      <Popper id="cat-filter-pop" open={open} anchorEl={anchorEl}>
         <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-          <div className="bg-amber-500 p-3 rounded-xl mt-1">
+          <div className="p-2 mt-2 border-1 rounded-xl bg-white border-[#00000026] primary-shadow min-w-[280px] ms-1">
             <div>
-              <span className="text-white">Select Categories</span>
+              <div className="mt-2">
+                <div className="text-[#060606] text-[14px]">By categories</div>
+              </div>
+              <div className="flex flex-col">
+                {Object.entries(EventNames).map(([key, value]) => {
+                  const isActive = selectedFilters.includes(key);
+                  return (
+                    <div
+                      key={`event-option-${key}`}
+                      className="text-[14px] lg:text-[16px] flex justify-between p-[6px] cursor-pointer rounded-sm hover:bg-[#EAEAEA]! hover:text-[#06060680]!"
+                      style={{
+                        backgroundColor: isActive ? "#FFF1EA" : "white",
+                        color: isActive ? "#FD5900" : "#06060680",
+                      }}
+                      onClick={() => handleClickFilterItem(key)}
+                    >
+                      <span>{value}</span>
+                      {isActive && (
+                        <span>
+                          <RightIcon />
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="flex gap-2 mt-2">
-              {Object.entries(EventNames).map(([key, value]) => {
-                const isActive = selectedFilters.includes(key);
-                return (
-                  <div
-                    key={`filter-option-${key}`}
-                    className="text-white text-[10px] rounded-xl px-3 py-1 cursor-pointer"
-                    style={{
-                      backgroundColor: isActive ? "green" : "gray",
-                    }}
-                    onClick={() => handleClickFilterItem(key)}
-                  >
-                    {value}
-                  </div>
-                );
-              })}
+            <div>
+              <div>
+                <div className="text-[#060606] text-[14px] mt-2">By Date</div>
+              </div>
+              <div className="flex flex-col">
+                {Object.entries(EventDateFilters).map(([key, value]) => {
+                  const isActive = dateFilters.includes(key);
+                  return (
+                    <div
+                      key={`event-option-${key}`}
+                      className="text-[14px] lg:text-[16px] flex justify-between p-[6px] cursor-pointer rounded-sm hover:bg-[#EAEAEA]! hover:text-[#06060680]!"
+                      style={{
+                        backgroundColor: isActive ? "#FFF1EA" : "white",
+                        color: isActive ? "#FD5900" : "#06060680",
+                      }}
+                      onClick={() => handleClickDateFilterItem(key)}
+                    >
+                      <span>{value}</span>
+                      {isActive && (
+                        <span>
+                          <RightIcon />
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="h-full flex justify-between items-end gap-2 mt-2">
+              <button
+                onClick={handleResetFilters}
+                className="flex-1 p-2 rounded-[8px] text-[14px] lg:text-[16px] font-medium secondary-button"
+              >
+                Reset
+              </button>
+              <button
+                onClick={handleApplyFilters}
+                className="flex-1 p-2 gradient-bg text-white text-[14px] lg:text-[16px] font-medium rounded-[8px] btn-hover-2"
+              >
+                Apply Filters
+              </button>
             </div>
           </div>
         </ClickAwayListener>
       </Popper>
+      <Popper
+        placement="bottom-end"
+        id="user-profile-pop"
+        open={userPopper}
+        anchorEl={userAnchorEl}
+      >
+        <ClickAwayListener onClickAway={() => setUserAnchorEl(null)}>
+          <div className="p-2 mt-2 border-1 rounded-xl bg-white border-[#00000026] primary-shadow min-w-[180px]">
+            <div className="flex flex-col justify-center">
+              <div className="flex items-center justify-center   ">
+                <span className="flex p-1 bg-[#EAEAEA] rounded-md">
+                  <UserIcon />
+                </span>
+              </div>
+              <div className="text-[20px] font-sans text-[#060606] text-center">
+                {userData?.data?.username}
+              </div>
+              <div className="text-[14px] font-sans text-[#06060680] text-center">
+                {userData?.data?.email || "jhondoe@mailsample.com"}
+              </div>
+              <button
+                className="flex gap-2 border-t-1 pt-2 items-center border-[#EAEAEA] mt-2 cursor-pointer"
+                onClick={handleClickLogout}
+              >
+                <span>
+                  <LogOutIcon />
+                </span>
+                <span className="text-[14px] font-sans text-[#060606]">
+                  Log Out
+                </span>
+              </button>
+            </div>
+          </div>
+        </ClickAwayListener>
+      </Popper>
+
       <AppLoader />
     </>
   );

@@ -19,3 +19,5 @@ export { default as ForwardIcon } from "./forward";
 export { default as GirlThinkingIcon } from "./girl_thinking";
 export { default as UploadImageDesktopIcon } from "./upload_image_desktop";
 export { default as DownArrowLongIcon } from "./down_arrow_long";
+export { default as LogOutIcon } from "./log_out";
+export { default as RightIcon } from "./right";

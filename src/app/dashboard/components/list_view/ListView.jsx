@@ -101,7 +101,7 @@ const ListView = ({
           <button
             onClick={() => handlePageChange("back")}
             style={{ pointerEvents: currentPage === 1 ? "none" : "all" }}
-            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
+            className="flex items-center border-[1px] border-[#EAEAEA] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
           >
             <span>
               <PreviousIcon />

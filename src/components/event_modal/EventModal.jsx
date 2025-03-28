@@ -20,7 +20,7 @@ export default function EventModal({
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     setValue,
     formState: { errors },
   } = useForm();
@@ -48,6 +48,7 @@ export default function EventModal({
       setEventCategory(1);
       setEventDate("");
       setFileURL(null);
+      reset();
     }
   }, [isOpen]);
   console.log("updatingItem", updatingItem);
@@ -175,7 +176,7 @@ export default function EventModal({
           <span className="font-sans font-medium text-[20px]">New Event</span>
           <button
             onClick={onClose}
-            className="border-[1px] rounded-[8px] px-2 border-[#06060680] py-0 cursor-pointer btn-hover-1"
+            className="border-[1px] rounded-[8px] px-2 border-[#EAEAEA] py-0 cursor-pointer btn-hover-1"
           >
             x
           </button>
@@ -293,7 +294,7 @@ export default function EventModal({
           <div className="h-full flex justify-between items-end gap-2">
             <button
               onClick={onClose}
-              className="flex-1 bg-[#EAEAEA] font-medium cursor-pointer text-[#06060680] rounded-[8px]  text-[20px] py-1 btn-hover-1"
+              className="flex-1 rounded-[8px] text-[20px] py-1 secondary-button"
             >
               Cancel
             </button>
