@@ -1,4 +1,4 @@
-import { ForwardIcon, PreviousIcon } from "@/assets/svg";
+import { DownArrowLongIcon, ForwardIcon, PreviousIcon } from "@/assets/svg";
 import { EventListItem } from "@/components";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
@@ -9,11 +9,14 @@ const ListView = ({
   data,
   currentPage,
   setCurrentPage,
+  sortingFilters,
+  onChangeSorting,
 }) => {
   const [pages, setPages] = useState([]);
   const isMobileView = useMediaQuery("(max-width:600px)");
   const totalPages = Math.ceil(data?.totalCount / 10);
 
+  console.log("sortingFilters", sortingFilters);
   const columnWidth = isMobileView
     ? "200px 200px minmax(400px, 1fr)"
     : "400px 300px minmax(200px, 1fr)";
@@ -35,16 +38,47 @@ const ListView = ({
     }
   };
 
+  const handleSortChange = (field) => {
+    console.log("field", field);
+    onChangeSorting(field);
+  };
+
   return (
-    <div className="h-full bg-white rounded-2xl flex flex-col overflow-auto p-2">
+    <div className="h-full bg-white rounded-2xl flex flex-col overflow-auto p-3">
       <div className="">
         <div className=" grid" style={{ gridTemplateColumns: columnWidth }}>
-          <span className="border-b-[1px] border-b-[#EAEAEA] text-[12px] font-sans font-medium pb-2">
-            Event Name
-          </span>
-          <span className="border-b-[1px] border-b-[#EAEAEA] text-[12px] font-sans font-medium pb-2">
-            Date
-          </span>
+          <div className="border-b-[1px] border-b-[#EAEAEA]  pb-2 flex">
+            <span className="text-[12px] font-sans font-medium">
+              Event Name
+            </span>
+            <button
+              className="ms-2 hover:border-1 btn-hover-1 px-1 rounded-xl"
+              style={{
+                transform:
+                  sortingFilters.eventName === "desc"
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)",
+              }}
+              onClick={() => handleSortChange("name")}
+            >
+              <DownArrowLongIcon />
+            </button>
+          </div>
+          <div className="border-b-[1px] border-b-[#EAEAEA]  pb-2 flex">
+            <span className="text-[12px] font-sans font-medium">Date</span>
+            <button
+              className="ms-2 hover:border-1 btn-hover-1 px-1 rounded-xl"
+              style={{
+                transform:
+                  sortingFilters.eventDate === "desc"
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)",
+              }}
+              onClick={() => handleSortChange("date")}
+            >
+              <DownArrowLongIcon />
+            </button>
+          </div>
           <span className="border-b-[1px] border-b-[#EAEAEA] text-[12px] font-sans font-medium pb-2">
             Event Type
           </span>

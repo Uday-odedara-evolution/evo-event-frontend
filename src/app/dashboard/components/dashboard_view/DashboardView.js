@@ -1,4 +1,13 @@
 "use client";
+import { useEffect, useState } from "react";
+import APICall from "@/utils/ApiCall";
+import { redirect } from "next/navigation";
+import { useDebounce } from "use-debounce";
+import { eventEmitter } from "@/utils/EventEmitter";
+import { EventNames } from "@/constants/constants";
+import { Popper } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import AppLoader from "@/components/app_loader/AppLoader";
 import {
   ArrowIcon,
   CardViewButtonIcon,
@@ -12,24 +21,15 @@ import {
   UserIcon,
 } from "@/assets/svg";
 import { DeleteModal, EventModal } from "@/components";
-import { useEffect, useState } from "react";
-import CardView from "./components/card_view/CardView";
-import ListView from "./components/list_view/ListView";
-import APICall from "@/utils/ApiCall";
-import { redirect } from "next/navigation";
-import { useDebounce } from "use-debounce";
-import { EventNames } from "@/constants/constants";
-import { Popper } from "@mui/material";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { eventEmitter } from "@/utils/EventEmitter";
-import AppLoader from "@/components/app_loader/AppLoader";
+import CardView from "../card_view/CardView";
+import ListView from "../list_view/ListView";
 
-export default function Dashboard() {
+const DashboardView = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasRecord, setHasRecord] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isCardView, setIsCardView] = useState(true);
+  const [isCardView, setIsCardView] = useState(false);
   const [updatingItem, setUpdatingItem] = useState(null);
   const [eventList, setEventList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,9 +38,10 @@ export default function Dashboard() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState([]);
 
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  const [sortEventName, setSortEventName] = useState("");
+  console.log("sortEventName", sortEventName);
+  const [sortEventDate, setSortEventDate] = useState("");
+  console.log("sortEventDate", sortEventDate);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
@@ -65,7 +66,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     getEvents();
-  }, [currentPage]);
+  }, [currentPage, sortEventDate, sortEventName]);
 
   useEffect(() => {
     if (selectedFilters) {
@@ -82,6 +83,14 @@ export default function Dashboard() {
       pageNumber: currentPage,
       creatorId: userData.data.userId,
     };
+
+    if (sortEventDate) {
+      params.sortDate = sortEventDate;
+    }
+
+    if (sortEventName) {
+      params.sortName = sortEventName;
+    }
 
     if (query) {
       params.searchQuery = query;
@@ -140,8 +149,31 @@ export default function Dashboard() {
     }
   };
 
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleSortChange = (field) => {
+    console.log("field", field);
+    if (field === "name") {
+      setSortEventName((prev) => {
+        return prev === "asc" ? "desc" : "asc";
+      });
+      setSortEventDate("");
+    }
+
+    if (field === "date") {
+      setSortEventDate((prev) => {
+        return prev === "asc" ? "desc" : "asc";
+      });
+      setSortEventName("");
+    }
+
+    // if (field) setSortingFilters((prev) => ({ ...prev, [field]: sort }));
+  };
+
   return (
-    <div className="h-full flex">
+    <>
       <div className="  h-[100%] p-3 lg:px-20 flex flex-col gap-2 w-[100vw]">
         {isSearching ? (
           <div className="bg-white p-2 px-4 flex gap-1 rounded-[16px] items-center shadow-md shadow-[#00000014]">
@@ -271,6 +303,11 @@ export default function Dashboard() {
                       data={eventList}
                       currentPage={currentPage}
                       setCurrentPage={setCurrentPage}
+                      onChangeSorting={handleSortChange}
+                      sortingFilters={{
+                        eventName: sortEventName,
+                        eventDate: sortEventDate,
+                      }}
                     />
                   )}
                 </div>
@@ -351,6 +388,8 @@ export default function Dashboard() {
         </ClickAwayListener>
       </Popper>
       <AppLoader />
-    </div>
+    </>
   );
-}
+};
+
+export default DashboardView;

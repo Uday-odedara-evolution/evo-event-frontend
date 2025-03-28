@@ -79,6 +79,13 @@ select {
 .btn-hover-1:hover svg path {
   stroke: white;
   stroke-opacity: 1;
+  fill: white !important;
+}
+
+.btn-hover-1:hover svg {
+  stroke: white;
+  stroke-opacity: 1;
+  fill: white;
 }
 
 .btn-hover-2:hover {
@@ -117,6 +124,6 @@ input:focus {
 }
 
 .active-option {
-  background-color: #FFF1EA;
+  background-color: #fff1ea;
   color: #fd5900;
 }

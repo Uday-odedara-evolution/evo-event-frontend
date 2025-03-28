@@ -160,10 +160,11 @@ export default function EventModal({
     }
     if (type === "date") {
       el.type = "date";
-      setTimeout(() => {
-        const newEl = document.getElementById("date-selector");
-        newEl.click();
-      }, 200);
+      try {
+        el.showPicker();
+      } catch (error) {
+        console.log("show date picker error", error);
+      }
     }
   };
 
@@ -245,7 +246,7 @@ export default function EventModal({
             />
           </div>
         </div>
-        <div>
+        <div onBlur={() => handleChangeType("text")}>
           <div className="text-[#06060680] text-[16px]">Event Date</div>
           <div className="mt-1 relative">
             <input
