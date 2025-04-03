@@ -2,7 +2,7 @@ export const eventEmitter = {
   _events: {},
   dispatch(event, data) {
     if (!this._events[event]) return;
-    this._events[event].forEach((callback) => {
+    this._events[event].forEach(callback => {
       return callback(data);
     });
   },

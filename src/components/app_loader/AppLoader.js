@@ -8,7 +8,8 @@ export default function AppLoader() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    eventEmitter.subscribe("loader", (state) => {
+    eventEmitter.subscribe("loader", state => {
+      console.log("state", state);
       if (state) {
         count += 1;
       } else {
@@ -33,8 +34,8 @@ export default function AppLoader() {
   }
 
   return (
-    <div className="fixed top-0 right-0 left-0 bottom-0 bg-[#000000ba] flex justify-center items-center">
-      <span className="text-white text-4xl">Loading...</span>
+    <div className="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-[#000000ba]">
+      <span className="text-4xl text-white">Loading...</span>
     </div>
   );
 }

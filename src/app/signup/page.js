@@ -1,10 +1,10 @@
-import LoginForm from "./login_form/LoginForm";
+import SignUpForm from "./components/SignUpForm";
 
 export const metadata = {
-  title: "Login",
+  title: "Sign Up",
 };
 
-export default function Login() {
+export default function Signup() {
   return (
     <div className="h-[100vh] bg-[#FFF1EA]">
       <div className="flex h-full flex-1 items-center justify-center">
@@ -19,10 +19,7 @@ export default function Login() {
           <div className="text-center text-[16px] whitespace-pre-line text-[#06060680] lg:text-[20px]">
             <span>{`Welcome to evento please enter your \n login details below`}</span>
           </div>
-          <LoginForm />
-          <div className="text-center text-[16px] underline">
-            <span className="cursor-pointer">Forgot the password ?</span>
-          </div>
+          <SignUpForm />
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary-icon: #060606;
 }
 
 @theme inline {
@@ -110,12 +111,16 @@ input:focus {
   border-color: #fd5900 !important;
   border-width: 1px !important;
   caret-color: #fd5900;
+  --primary-icon: red;
 }
 
-.category-selection:focus {
-  border-color: #fd5900 !important;
-  border-width: 1px !important;
-  caret-color: #fd5900;
+input:focus + .icon-container > svg > path {
+  fill: #fd5900 !important;
+  fill-opacity: 1;
+}
+
+.category-selection:focus + .cat-select-icon-container > svg > path {
+  stroke: #fd5900 !important;
 }
 
 .active-option {

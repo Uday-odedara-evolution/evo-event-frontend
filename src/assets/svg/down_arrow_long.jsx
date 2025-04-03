@@ -1,5 +1,5 @@
 import * as React from "react";
-const SVGComponent = (props) => (
+const SVGComponent = props => (
   <svg
     fill="#000000"
     width="10px"

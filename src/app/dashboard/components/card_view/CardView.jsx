@@ -21,20 +21,20 @@ const CardView = ({
     setPages(arr);
   }, [data]);
 
-  const handlePageChange = (type) => {
+  const handlePageChange = type => {
     if (type === "back") {
-      setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+      setCurrentPage(prev => (prev > 1 ? prev - 1 : prev));
     } else {
-      setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+      setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev));
     }
   };
 
   return (
     <>
-      <div className=" h-full flex flex-col">
-        <div className="w-full flex flex-col lg:flex-row lg:flex-wrap items-center gap-4">
+      <div className="flex h-full flex-col">
+        <div className="flex w-full flex-col items-center gap-4 lg:flex-row lg:flex-wrap">
           {data?.totalCount > 0 &&
-            data?.list.map((item) => (
+            data?.list.map(item => (
               <EventCard
                 key={`card-item-${item.id}`}
                 handleClickDelete={handleClickDelete}
@@ -43,21 +43,21 @@ const CardView = ({
               />
             ))}
         </div>
-        <div className="flex justify-between items-center mt-auto pt-2">
+        <div className="mt-auto flex items-center justify-between pt-2">
           <button
             onClick={() => handlePageChange("back")}
             style={{ pointerEvents: currentPage === 1 ? "none" : "all" }}
-            className="flex items-center border-[1px] border-[#EAEAEA] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
+            className="btn-hover-1 flex items-center gap-2 rounded-[8px] border-[1px] border-[#EAEAEA] px-2 py-1"
           >
             <span>
               <PreviousIcon />
             </span>
-            <span className="text-[#06060680] text-[16px] hidden lg:block">
+            <span className="hidden text-[16px] text-[#06060680] lg:block">
               Previous
             </span>
           </button>
           <div className="flex gap-1">
-            {pages.map((page) => (
+            {pages.map(page => (
               <button
                 key={`page-${page}`}
                 style={{
@@ -66,7 +66,7 @@ const CardView = ({
                   pointerEvents: currentPage === page ? "none" : "all",
                 }}
                 onClick={() => setCurrentPage(page)}
-                className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] btn-hover-2"
+                className="btn-hover-2 flex h-[40px] w-[40px] items-center justify-center rounded-[8px] font-sans text-[14px] font-medium text-[#667085]"
               >
                 {page}
               </button>
@@ -78,9 +78,9 @@ const CardView = ({
             style={{
               pointerEvents: currentPage === pages.at(-1) ? "none" : "all",
             }}
-            className="flex items-center border-[1px] border-[#EAEAEA] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
+            className="btn-hover-1 flex items-center gap-2 rounded-[8px] border-[1px] border-[#EAEAEA] px-2 py-1"
           >
-            <span className="text-[#06060680] text-[16px] hidden lg:block">
+            <span className="hidden text-[16px] text-[#06060680] lg:block">
               Forward
             </span>
             <span>

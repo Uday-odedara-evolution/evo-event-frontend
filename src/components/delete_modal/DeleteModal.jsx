@@ -21,18 +21,18 @@ const DeleteModal = ({
 
   return (
     <ModalView isOpen={isOpen} onClose={onClose} isDeleteModal>
-      <div className="p-3 flex flex-col gap-2 mt-[inherit] w-[inherit] bg-white max-w-[inherit]">
-        <div className="flex justify-between items-center">
-          <span className="font-sans font-medium text-[20px]">Delete ?</span>
+      <div className="mt-[inherit] flex w-[inherit] max-w-[inherit] flex-col gap-2 bg-white p-3">
+        <div className="flex items-center justify-between">
+          <span className="font-sans text-[20px] font-medium">Delete ?</span>
           <button
             onClick={onClose}
-            className="border-[1px] rounded-[8px] px-2 border-[#EAEAEA] py-0 cursor-pointer btn-hover-1"
+            className="btn-hover-1 cursor-pointer rounded-[8px] border-[1px] border-[#EAEAEA] px-2 py-0"
           >
             x
           </button>
         </div>
         <div>
-          <span className="text-[20px] font-medium font-sans text-[#06060680]">
+          <span className="font-sans text-[20px] font-medium text-[#06060680]">
             Are you sure you want to delete this event ?
           </span>
         </div>
@@ -42,16 +42,16 @@ const DeleteModal = ({
           </span>
         </div>
         <div className="mb-2">
-          <div className="h-full flex justify-between items-end gap-2">
+          <div className="flex h-full items-end justify-between gap-2">
             <button
               onClick={onClose}
-              className="flex-1 bg-[#EAEAEA] font-medium cursor-pointer text-[#06060680] rounded-[8px]  text-[20px] py-1"
+              className="flex-1 cursor-pointer rounded-[8px] bg-[#EAEAEA] py-1 text-[20px] font-medium text-[#06060680]"
             >
               Cancel
             </button>
             <button
               onClick={handleDelete}
-              className="flex-1 gradient-bg text-white text-[20px] rounded-[8px] py-1"
+              className="gradient-bg flex-1 rounded-[8px] py-1 text-[20px] text-white"
             >
               Delete
             </button>

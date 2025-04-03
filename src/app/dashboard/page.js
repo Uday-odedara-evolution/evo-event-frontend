@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function Dashboard() {
   return (
-    <div className="h-full flex">
+    <div className="flex h-full">
       <DashboardView />
     </div>
   );

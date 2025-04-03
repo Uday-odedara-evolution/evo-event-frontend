@@ -1,4 +1,4 @@
-const SVGComponent = (props) => (
+const SVGComponent = props => (
   <svg
     width={24}
     height={24}

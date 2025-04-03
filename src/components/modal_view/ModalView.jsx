@@ -7,7 +7,7 @@ const ModalView = ({ isOpen = false, children, onClose, isDeleteModal }) => {
   if (!isMobileView) {
     return (
       <Modal open={isOpen} onClose={onClose}>
-        <div className=" bg-white m-auto mt-5 rounded-2xl p-2 max-w-[520px]">
+        <div className="m-auto mt-5 max-w-[520px] rounded-2xl bg-white p-2">
           {children}
         </div>
       </Modal>
@@ -15,8 +15,8 @@ const ModalView = ({ isOpen = false, children, onClose, isDeleteModal }) => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 top-0 flex bg-[#000000ba]">
-      <div className=" w-full  mt-0 lg:mt-auto lg:h-full">{children}</div>
+    <div className="fixed top-0 right-0 bottom-0 left-0 flex bg-[#000000ba]">
+      <div className="mt-0 w-full lg:mt-auto lg:h-full">{children}</div>
     </div>
   );
 };

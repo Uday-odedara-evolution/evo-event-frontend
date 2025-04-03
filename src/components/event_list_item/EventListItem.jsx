@@ -11,10 +11,10 @@ const EventListItem = ({
 
   return (
     <div
-      className=" grid py-2 items-center"
+      className="grid items-center py-2"
       style={{ gridTemplateColumns: columnWidth }}
     >
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         <span className="h-[56px] w-[56px]">
           <img
             className="h-full w-full rounded-xl"
@@ -22,15 +22,15 @@ const EventListItem = ({
             alt=""
           />
         </span>
-        <span className="text-[16px font-medium font-sans]">{item?.name}</span>
+        <span className="text-[16px font-sans] font-medium">{item?.name}</span>
       </div>
       <div>
-        <span className="text-[16px] text-[#06060680] font-sans">
+        <span className="font-sans text-[16px] text-[#06060680]">
           {formattedDate}
         </span>
       </div>
       <div className="flex items-center pe-2">
-        <span className="text-[16px] text-[#06060680] font-sans">
+        <span className="font-sans text-[16px] text-[#06060680]">
           {EventNames[item?.event_category_id] || "-"}
         </span>
         <button

@@ -1,4 +1,9 @@
-import { DownArrowLongIcon, ForwardIcon, PreviousIcon } from "@/assets/svg";
+import {
+  DownArrowLongIcon,
+  ForwardIcon,
+  LoaderIcon,
+  PreviousIcon,
+} from "@/assets/svg";
 import { EventListItem } from "@/components";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
@@ -11,6 +16,7 @@ const ListView = ({
   setCurrentPage,
   sortingFilters,
   onChangeSorting,
+  isLoading = true,
 }) => {
   const [pages, setPages] = useState([]);
   const isMobileView = useMediaQuery("(max-width:600px)");
@@ -30,29 +36,29 @@ const ListView = ({
     setPages(arr);
   }, [data]);
 
-  const handlePageChange = (type) => {
+  const handlePageChange = type => {
     if (type === "back") {
-      setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+      setCurrentPage(prev => (prev > 1 ? prev - 1 : prev));
     } else {
-      setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+      setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev));
     }
   };
 
-  const handleSortChange = (field) => {
+  const handleSortChange = field => {
     console.log("field", field);
     onChangeSorting(field);
   };
 
   return (
-    <div className="h-full bg-white rounded-2xl flex flex-col overflow-auto p-3">
+    <div className="flex h-full flex-col overflow-auto rounded-2xl bg-white p-3">
       <div className="">
-        <div className=" grid" style={{ gridTemplateColumns: columnWidth }}>
-          <div className="border-b-[1px] border-b-[#EAEAEA]  pb-2 flex">
-            <span className="text-[12px] font-sans font-medium">
+        <div className="grid" style={{ gridTemplateColumns: columnWidth }}>
+          <div className="flex border-b-[1px] border-b-[#EAEAEA] pb-2">
+            <span className="font-sans text-[12px] font-medium">
               Event Name
             </span>
             <button
-              className="ms-2 hover:border-1 btn-hover-1 px-1 rounded-xl"
+              className="btn-hover-1 ms-2 rounded-xl px-1 hover:border-1"
               style={{
                 transform:
                   sortingFilters.eventName === "desc"
@@ -64,10 +70,10 @@ const ListView = ({
               <DownArrowLongIcon />
             </button>
           </div>
-          <div className="border-b-[1px] border-b-[#EAEAEA]  pb-2 flex">
-            <span className="text-[12px] font-sans font-medium">Date</span>
+          <div className="flex border-b-[1px] border-b-[#EAEAEA] pb-2">
+            <span className="font-sans text-[12px] font-medium">Date</span>
             <button
-              className="ms-2 hover:border-1 btn-hover-1 px-1 rounded-xl"
+              className="btn-hover-1 ms-2 rounded-xl px-1 hover:border-1"
               style={{
                 transform:
                   sortingFilters.eventDate === "desc"
@@ -79,69 +85,75 @@ const ListView = ({
               <DownArrowLongIcon />
             </button>
           </div>
-          <span className="border-b-[1px] border-b-[#EAEAEA] text-[12px] font-sans font-medium pb-2">
+          <span className="border-b-[1px] border-b-[#EAEAEA] pb-2 font-sans text-[12px] font-medium">
             Event Type
           </span>
         </div>
       </div>
-      <div className="h-full flex flex-col">
-        {data?.totalCount > 0 &&
-          data?.list.map((item) => {
-            return (
-              <EventListItem
-                key={`list-item-${item.id}`}
-                handleClickDelete={handleClickDelete}
-                item={item}
-                handleClickUpdate={handleClickUpdate}
-                columnWidth={columnWidth}
-              />
-            );
-          })}
-        <div className="flex justify-between items-center mt-auto">
-          <button
-            onClick={() => handlePageChange("back")}
-            style={{ pointerEvents: currentPage === 1 ? "none" : "all" }}
-            className="flex items-center border-[1px] border-[#EAEAEA] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
-          >
-            <span>
-              <PreviousIcon />
-            </span>
-            <span className="text-[#06060680] text-[16px] hidden lg:block">
-              Previous
-            </span>
-          </button>
-          <div className="flex gap-1">
-            {pages.map((page) => (
-              <button
-                key={`page-${page}`}
-                style={{
-                  backgroundColor: currentPage === page ? "#FD5900" : "unset",
-                  color: currentPage === page ? "white" : "#667085",
-                  pointerEvents: currentPage === page ? "none" : "all",
-                }}
-                onClick={() => setCurrentPage(page)}
-                className="text-[#667085] h-[40px] w-[40px] flex justify-center items-center text-[14px] font-medium font-sans rounded-[8px] btn-hover-1"
-              >
-                {page}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={() => handlePageChange("next")}
-            style={{
-              pointerEvents: currentPage === pages.at(-1) ? "none" : "all",
-            }}
-            className="flex items-center border-[1px] border-[#06060680] px-2 py-1 rounded-[8px] gap-2 btn-hover-1"
-          >
-            <span className="text-[#06060680] text-[16px] hidden lg:block">
-              Forward
-            </span>
-            <span>
-              <ForwardIcon />
-            </span>
-          </button>
+      {isLoading ? (
+        <div>
+          <LoaderIcon />
         </div>
-      </div>
+      ) : (
+        <div className="flex h-full flex-col">
+          {data?.totalCount > 0 &&
+            data?.list.map(item => {
+              return (
+                <EventListItem
+                  key={`list-item-${item.id}`}
+                  handleClickDelete={handleClickDelete}
+                  item={item}
+                  handleClickUpdate={handleClickUpdate}
+                  columnWidth={columnWidth}
+                />
+              );
+            })}
+          <div className="mt-auto flex items-center justify-between">
+            <button
+              onClick={() => handlePageChange("back")}
+              style={{ pointerEvents: currentPage === 1 ? "none" : "all" }}
+              className="btn-hover-1 flex items-center gap-2 rounded-[8px] border-[1px] border-[#EAEAEA] px-2 py-1"
+            >
+              <span>
+                <PreviousIcon />
+              </span>
+              <span className="hidden text-[16px] text-[#06060680] lg:block">
+                Previous
+              </span>
+            </button>
+            <div className="flex gap-1">
+              {pages.map(page => (
+                <button
+                  key={`page-${page}`}
+                  style={{
+                    backgroundColor: currentPage === page ? "#FD5900" : "unset",
+                    color: currentPage === page ? "white" : "#667085",
+                    pointerEvents: currentPage === page ? "none" : "all",
+                  }}
+                  onClick={() => setCurrentPage(page)}
+                  className="btn-hover-1 flex h-[40px] w-[40px] items-center justify-center rounded-[8px] font-sans text-[14px] font-medium text-[#667085]"
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => handlePageChange("next")}
+              style={{
+                pointerEvents: currentPage === pages.at(-1) ? "none" : "all",
+              }}
+              className="btn-hover-1 flex items-center gap-2 rounded-[8px] border-[1px] border-[#06060680] px-2 py-1"
+            >
+              <span className="hidden text-[16px] text-[#06060680] lg:block">
+                Forward
+              </span>
+              <span>
+                <ForwardIcon />
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
