@@ -32,7 +32,7 @@ const CardView = ({
 
   if (isLoading) {
     return (
-      <div className="h-[100px] w-[100px] flex m-auto">
+      <div className="m-auto flex h-[100px] w-[100px]">
         <LoaderIcon />
       </div>
     );

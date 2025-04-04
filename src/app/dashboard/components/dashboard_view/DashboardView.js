@@ -185,6 +185,7 @@ const DashboardView = () => {
     setSelectedFilters([]);
   };
   const handleApplyFilters = () => {
+    setCurrentPage(1);
     getEvents();
     setAnchorEl(null);
   };
@@ -239,7 +240,7 @@ const DashboardView = () => {
             </div>
             <button
               onClick={e => handleClick(e, "user")}
-              className="flex w-[40px] cursor-pointer items-center justify-center self-stretch rounded-[12px] bg-[#EAEAEA] p-1"
+              className="action-btn flex w-[40px] cursor-pointer items-center justify-center self-stretch rounded-[12px] bg-[#EAEAEA] p-1"
             >
               <div>
                 <UserIcon />
@@ -486,7 +487,7 @@ const DashboardView = () => {
                 {userData?.data?.email || "jhondoe@mailsample.com"}
               </div>
               <button
-                className="mt-2 flex cursor-pointer items-center gap-2 border-t-1 border-[#EAEAEA] pt-2"
+                className="action-btn mt-2 flex cursor-pointer items-center gap-2 border-t-1 border-[#EAEAEA] p-1"
                 onClick={handleClickLogout}
               >
                 <span>
