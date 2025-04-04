@@ -91,7 +91,7 @@ const ListView = ({
         </div>
       </div>
       {isLoading ? (
-        <div>
+        <div className="m-auto flex h-[100px] w-[100px]">
           <LoaderIcon />
         </div>
       ) : (

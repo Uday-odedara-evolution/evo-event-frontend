@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import APICall from "@/utils/ApiCall";
 import { redirect } from "next/navigation";
 import { useDebounce } from "use-debounce";
-import { eventEmitter } from "@/utils/EventEmitter";
 import { EventNames, EventDateFilters } from "@/constants/constants";
 import { Popper } from "@mui/material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -94,7 +93,7 @@ const DashboardView = () => {
       params.dFilters = dFilters;
     }
 
-    eventEmitter.dispatch("loader", true);
+    setIsLoading(true);
 
     APICall.get("/event", { params })
       .then(res => {
@@ -108,7 +107,7 @@ const DashboardView = () => {
         setAnchorEl(null);
       })
       .finally(() => {
-        eventEmitter.dispatch("loader", false);
+        setIsLoading(false);
       });
   };
 
@@ -325,6 +324,7 @@ const DashboardView = () => {
                     data={eventList}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    isLoading={isLoading}
                   />
                 ) : (
                   <ListView
@@ -338,6 +338,7 @@ const DashboardView = () => {
                       eventName: sortEventName,
                       eventDate: sortEventDate,
                     }}
+                    isLoading={isLoading}
                   />
                 )}
               </div>

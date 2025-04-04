@@ -1,4 +1,5 @@
 "use client";
+import { LoaderIcon } from "@/assets/svg";
 import { eventEmitter } from "@/utils/EventEmitter";
 import { useEffect, useState } from "react";
 
@@ -34,8 +35,10 @@ export default function AppLoader() {
   }
 
   return (
-    <div className="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-[#000000ba]">
-      <span className="text-4xl text-white">Loading...</span>
+    <div className="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-[#ffffff73]">
+      <div className="h-[200px] w-[200px]">
+        <LoaderIcon />
+      </div>
     </div>
   );
 }
