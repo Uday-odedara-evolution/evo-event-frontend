@@ -1,3 +1,4 @@
+"use client";
 import Cropper from "react-easy-crop";
 import Modal from "@mui/material/Modal";
 import getCroppedImg from "@/utils/cropImage";

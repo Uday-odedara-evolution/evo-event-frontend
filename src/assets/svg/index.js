@@ -1,5 +1,3 @@
-import { ReactComponent as LoaderIcon } from "./loader.svg";
-
 export { default as EyeIcon } from "./eye";
 export { default as SearchIcon } from "./search";
 export { default as UserIcon } from "./user";
@@ -23,4 +21,4 @@ export { default as UploadImageDesktopIcon } from "./upload_image_desktop";
 export { default as DownArrowLongIcon } from "./down_arrow_long";
 export { default as LogOutIcon } from "./log_out";
 export { default as RightIcon } from "./right";
-export { LoaderIcon };
+export { default as LoaderIcon } from "./loader";
