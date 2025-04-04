@@ -18,12 +18,12 @@ const EventCard = ({ handleClickUpdate, handleClickDelete, item }) => {
           <span className="font-sans text-[24px]">{item?.name}</span>
           <button
             onClick={() => handleClickDelete(item)}
-            className="ms-auto cursor-pointer"
+            className="action-btn ms-auto cursor-pointer"
           >
             <DeleteIcon />
           </button>
           <button
-            className="ms-1 cursor-pointer"
+            className="action-btn ms-1 cursor-pointer"
             onClick={() => handleClickUpdate(item)}
           >
             <UpdateIcon />

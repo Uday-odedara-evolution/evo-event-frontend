@@ -1,0 +1,14 @@
+{
+  "HomePage": {
+    "title": "namaste!"
+  },
+  "Login": {
+    "forgot_the_password": "kya aap password bhul gaye ???????"
+  },
+  "components": {
+    "localeSwitcher": {
+      "english": "English",
+      "hindi": "Hindi"
+    }
+  }
+}

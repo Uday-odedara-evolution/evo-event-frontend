@@ -1,0 +1,14 @@
+{
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "Login": {
+    "forgot_the_password": "Forgot the password ???????"
+  },
+  "components": {
+    "localeSwitcher": {
+      "english": "English",
+      "hindi": "Hindi"
+    }
+  }
+}

@@ -1,10 +1,13 @@
 import LoginForm from "./login_form/LoginForm";
+import { useTranslations } from "next-intl";
 
 export const metadata = {
   title: "Login",
 };
 
 export default function Login() {
+  const t = useTranslations("Login");
+
   return (
     <div className="h-[100vh] bg-[#FFF1EA]">
       <div className="flex h-full flex-1 items-center justify-center">
@@ -21,7 +24,7 @@ export default function Login() {
           </div>
           <LoginForm />
           <div className="text-center text-[16px] underline">
-            <span className="cursor-pointer">Forgot the password ?</span>
+            <span className="cursor-pointer">{t("forgot_the_password")}</span>
           </div>
         </div>
       </div>

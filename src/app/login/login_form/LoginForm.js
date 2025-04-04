@@ -1,5 +1,6 @@
 "use client";
 import { EyeIcon } from "@/assets/svg";
+import { LanguageSwitcher } from "@/components";
 import APICall from "@/utils/ApiCall";
 import { eventEmitter } from "@/utils/EventEmitter";
 import { redirect } from "next/navigation";
@@ -93,6 +94,7 @@ const LoginForm = () => {
           Log in
         </button>
       </div>
+      <LanguageSwitcher />
     </>
   );
 };
