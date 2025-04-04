@@ -38,8 +38,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${inter.variable} ${geistMono.variable} ${newsReader.variable} antialiased`}
       >
         <QueryProvider>
-          <AppGuard>{children}</AppGuard>
-          <AppLoader />
+          <AppGuard>
+            <>
+              {children}
+              <AppLoader />
+            </>
+          </AppGuard>
         </QueryProvider>
       </body>
     </html>
