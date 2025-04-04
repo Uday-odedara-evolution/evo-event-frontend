@@ -45,13 +45,13 @@ const DeleteModal = ({
           <div className="flex h-full items-end justify-between gap-2">
             <button
               onClick={onClose}
-              className="flex-1 cursor-pointer rounded-[8px] bg-[#EAEAEA] py-1 text-[20px] font-medium text-[#06060680]"
+              className="btn-hover-1 flex-1 cursor-pointer rounded-[8px] bg-[#EAEAEA] py-1 text-[20px] font-medium text-[#06060680]"
             >
               Cancel
             </button>
             <button
               onClick={handleDelete}
-              className="gradient-bg flex-1 rounded-[8px] py-1 text-[20px] text-white"
+              className="gradient-bg btn-hover-2 flex-1 rounded-[8px] py-1 text-[20px] text-white"
             >
               Delete
             </button>

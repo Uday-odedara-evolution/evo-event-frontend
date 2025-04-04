@@ -34,13 +34,13 @@ const EventListItem = ({
           {EventNames[item?.event_category_id] || "-"}
         </span>
         <button
-          className="ms-auto cursor-pointer"
+          className="action-btn ms-auto"
           onClick={() => handleClickDelete(item)}
         >
           <DeleteIcon />
         </button>
         <button
-          className="ms-1 cursor-pointer"
+          className="action-btn ms-1"
           onClick={() => handleClickUpdate(item)}
         >
           <UpdateIcon />
